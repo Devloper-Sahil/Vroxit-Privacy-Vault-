@@ -2,6 +2,13 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/pwabuilder-sw.js')
+      .then(() => console.log("Service Worker Registered Successfully"))
+      .catch((err) => console.log("Service Worker Failed", err));
+  }
+    </script>
     <link rel="manifest" href="/manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
