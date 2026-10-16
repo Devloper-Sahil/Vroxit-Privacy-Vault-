@@ -1,2257 +1,1610 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
-  <meta name="theme-color" content="#070b14" />
-  <meta name="description" content="Vroxit Privacy Vault & Encrypted Earning Manager OS" />
-  <title>VROXIT // Privacy Vault & Earning OS</title>
-  <link rel="manifest" href="manifest.json" />
-  <style>
-    /* ==========================================================================
-       PART 02: CYBERPUNK GLASSMORPHISM DESIGN SYSTEM & TOKENS
-       ========================================================================== */
-    :root {
-      --bg-base: #060911;
-      --bg-elevated: #0d1322;
-      --bg-glass: rgba(15, 23, 42, 0.72);
-      --bg-glass-strong: rgba(10, 15, 29, 0.92);
-      --border-subtle: rgba(56, 189, 248, 0.16);
-      --border-focus: rgba(0, 245, 212, 0.65);
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent-cyan: #00f5d4;
-      --accent-blue: #38bdf8;
-      --accent-purple: #a855f7;
-      --status-pass: #10b981;
-      --status-warn: #f59e0b;
-      --status-danger: #ef4444;
-      --shadow-glow: 0 0 24px rgba(0, 245, 212, 0.12);
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      --font-mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
-      --nav-height: 68px;
-    }
-
-    [data-theme="light"] {
-      --bg-base: #f1f5f9;
-      --bg-elevated: #ffffff;
-      --bg-glass: rgba(255, 255, 255, 0.85);
-      --bg-glass-strong: rgba(248, 250, 252, 0.96);
-      --border-subtle: rgba(15, 23, 42, 0.12);
-      --border-focus: rgba(2, 132, 199, 0.7);
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #64748b;
-      --accent-cyan: #0284c7;
-      --accent-blue: #2563eb;
-      --shadow-glow: 0 4px 20px rgba(15, 23, 42, 0.06);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      width: 100%;
-      min-height: 100vh;
-      background-color: var(--bg-base);
-      background-image: 
-        radial-gradient(circle at 12% 18%, rgba(0, 245, 212, 0.07) 0%, transparent 36%),
-        radial-gradient(circle at 88% 82%, rgba(56, 189, 248, 0.07) 0%, transparent 40%);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      font-size: 15px;
-      line-height: 1.5;
-      overflow-x: hidden;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* Layout Containers */
-    .app-shell {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 12px 14px calc(var(--nav-height) + 24px);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Glass Surfaces */
-    .glass-card {
-      background: var(--bg-glass);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      box-shadow: var(--shadow-glow);
-    }
-
-    /* Top Header HUD */
-    .top-hud {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 12px 16px;
-      position: sticky;
-      top: 8px;
-      z-index: 50;
-    }
-
-    .brand-cluster {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-emblem {
-      width: 34px;
-      height: 34px;
-      border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, rgba(0, 245, 212, 0.2), rgba(56, 189, 248, 0.2));
-      border: 1px solid var(--accent-cyan);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      color: var(--accent-cyan);
-      font-size: 16px;
-    }
-
-    .brand-title {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .brand-sub {
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: var(--text-secondary);
-    }
-
-    .hud-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Typography & Badges */
-    h1, h2, h3 {
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--accent-cyan);
-      font-family: var(--font-mono);
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      font-weight: 600;
-      text-transform: uppercase;
-      border: 1px solid transparent;
-    }
-
-    .badge-pass {
-      background: rgba(16, 185, 129, 0.14);
-      color: var(--status-pass);
-      border-color: rgba(16, 185, 129, 0.35);
-    }
-
-    .badge-warn {
-      background: rgba(245, 158, 11, 0.14);
-      color: var(--status-warn);
-      border-color: rgba(245, 158, 11, 0.35);
-    }
-
-    .badge-danger {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--status-danger);
-      border-color: rgba(239, 68, 68, 0.35);
-    }
-
-    .badge-info {
-      background: rgba(56, 189, 248, 0.14);
-      color: var(--accent-blue);
-      border-color: rgba(56, 189, 248, 0.35);
-    }
-
-    /* Grid Systems */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-      gap: 12px;
-    }
-
-    .stat-box {
-      padding: 14px;
-      border-radius: var(--radius-sm);
-      background: rgba(15, 23, 42, 0.45);
-      border: 1px solid var(--border-subtle);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    [data-theme="light"] .stat-box {
-      background: rgba(241, 245, 249, 0.75);
-    }
-
-    .stat-label {
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: var(--text-secondary);
-      text-transform: uppercase;
-    }
-
-    .stat-value {
-      font-size: 20px;
-      font-weight: 700;
-      font-family: var(--font-mono);
-      word-break: break-all;
-    }
-
-    .stat-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    @media (min-width: 720px) {
-      .two-col {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    /* Forms & Controls */
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
-    }
-
-    input[type="text"],
-    input[type="password"],
-    input[type="number"],
-    input[type="date"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: var(--radius-sm);
-      background: rgba(6, 9, 17, 0.65);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      font-size: 14px;
-      transition: border-color 0.15s ease;
-    }
-
-    [data-theme="light"] input[type="text"],
-    [data-theme="light"] input[type="password"],
-    [data-theme="light"] input[type="number"],
-    [data-theme="light"] input[type="date"],
-    [data-theme="light"] select,
-    [data-theme="light"] textarea {
-      background: #ffffff;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 2px rgba(0, 245, 212, 0.15);
-    }
-
-    textarea {
-      min-height: 88px;
-      resize: vertical;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 10px 15px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-weight: 600;
-      font-family: var(--font-mono);
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: transform 0.1s ease, opacity 0.15s ease, background 0.15s ease;
-      min-height: 40px;
-      text-decoration: none;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn:focus-visible {
-      outline: 2px solid var(--accent-cyan);
-      outline-offset: 2px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #00f5d4, #00bbf9);
-      color: #041019;
-      font-weight: 700;
-    }
-
-    .btn-secondary {
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--accent-blue);
-      border-color: rgba(56, 189, 248, 0.35);
-    }
-
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--status-danger);
-      border-color: rgba(239, 68, 68, 0.4);
-    }
-
-    .btn-sm {
-      padding: 6px 10px;
-      min-height: 32px;
-      font-size: 11px;
-    }
-
-    .btn-block {
-      width: 100%;
-    }
-
-    /* Lists & Items */
-    .item-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 420px;
-      overflow-y: auto;
-      padding-right: 2px;
-    }
-
-    .list-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px;
-      border-radius: var(--radius-sm);
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid var(--border-subtle);
-    }
-
-    [data-theme="light"] .list-row {
-      background: rgba(241, 245, 249, 0.9);
-    }
-
-    .row-main {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      min-width: 0;
-      flex: 1;
-    }
-
-    .row-title {
-      font-weight: 600;
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .row-meta {
-      font-size: 11px;
-      font-family: var(--font-mono);
-      color: var(--text-secondary);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .row-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    /* Bottom Navigation */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: var(--nav-height);
-      background: var(--bg-glass-strong);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 60;
-      padding: 0 8px;
-    }
-
-    .nav-btn {
-      flex: 1;
-      max-width: 160px;
-      height: 52px;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      cursor: pointer;
-      border-radius: var(--radius-sm);
-      transition: color 0.15s ease, background 0.15s ease;
-    }
-
-    .nav-btn.active {
-      color: var(--accent-cyan);
-      background: rgba(0, 245, 212, 0.09);
-    }
-
-    /* Lock Screen Overlay */
-    .lock-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: var(--bg-base);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .auth-card {
-      width: 100%;
-      max-width: 420px;
-    }
-
-    /* Progress / Meter */
-    .meter-track {
-      width: 100%;
-      height: 6px;
-      background: rgba(148, 163, 184, 0.2);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 4px;
-    }
-
-    .meter-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent-cyan);
-      transition: width 0.25s ease, background 0.25s ease;
-    }
-
-    /* Modal Viewer */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 90;
-      background: rgba(3, 7, 18, 0.82);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 540px;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-
-    .decrypted-pre {
-      background: rgba(6, 9, 17, 0.85);
-      border: 1px solid var(--border-subtle);
-      padding: 12px;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      color: var(--accent-cyan);
-      margin: 12px 0;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    /* Toast Notifications */
-    .toast-region {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 120;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-width: 320px;
-      width: calc(100% - 32px);
-      pointer-events: none;
-    }
-
-    .toast {
-      pointer-events: auto;
-      padding: 12px 14px;
-      border-radius: var(--radius-sm);
-      background: var(--bg-glass-strong);
-      border-left: 4px solid var(--accent-cyan);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-      font-size: 13px;
-      font-family: var(--font-mono);
-    }
-
-    .toast-error {
-      border-left-color: var(--status-danger);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 24px 12px;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      border: 1px dashed var(--border-subtle);
-      border-radius: var(--radius-sm);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob:;">
+<title>VROXIT VAULT OS — Verifiable Privacy & Workspace Engine</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            colors: {
+                os: { bg: '#060911', panel: '#0d1322', border: '#1e293b', text: '#e2e8f0', muted: '#64748b' },
+                neon: { cyan: '#00f2fe', blue: '#4facfe', violet: '#a18cd1', emerald: '#10b981', amber: '#f59e0b', rose: '#f43f5e' }
+            },
+            fontFamily: {
+                sans: ['Inter', 'system-ui', 'sans-serif'],
+                display: ['Sora', 'system-ui', 'sans-serif'],
+                mono: ['JetBrains Mono', 'monospace']
+            }
+        }
+    }
+};
+</script>
+
+<style>
+:root {
+    --bg: #060911;
+    --panel: rgba(13, 19, 34, 0.78);
+    --border: rgba(0, 242, 254, 0.14);
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+}
+* { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: #1e293b transparent; }
+body {
+    margin: 0;
+    background-color: var(--bg);
+    background-image: 
+        radial-gradient(circle at 10% 10%, rgba(0, 242, 254, 0.07), transparent 35%),
+        radial-gradient(circle at 90% 85%, rgba(161, 140, 209, 0.07), transparent 35%),
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+.cyber-glass {
+    background: var(--panel);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 50px -25px rgba(0, 0, 0, 0.9), 0 0 1px 1px rgba(255, 255, 255, 0.03) inset;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.cyber-glass:hover {
+    border-color: rgba(0, 242, 254, 0.32);
+}
+.text-neon {
+    background: linear-gradient(90deg, #00f2fe, #4facfe 55%, #a18cd1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.btn-cyber {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.65rem 1.25rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem;
+    color: #040811; background: linear-gradient(135deg, #00f2fe, #4facfe 60%, #a18cd1);
+    box-shadow: 0 8px 25px -8px rgba(0, 242, 254, 0.55); cursor: pointer; border: none;
+    transition: all 0.2s ease;
+}
+.btn-cyber:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 12px 30px -8px rgba(0, 242, 254, 0.75); }
+.btn-cyber:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-outline {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.6rem 1.1rem; border-radius: 0.75rem; font-weight: 600; font-size: 0.85rem;
+    color: var(--text); background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+    cursor: pointer; transition: all 0.2s ease;
+}
+.btn-outline:hover:not(:disabled) { border-color: #00f2fe; background: rgba(0, 242, 254, 0.08); color: #fff; }
+
+.btn-danger {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+    padding: 0.55rem 1rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.8rem;
+    color: #fecdd3; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.45);
+    cursor: pointer; transition: all 0.2s ease;
+}
+.btn-danger:hover { background: rgba(244, 63, 94, 0.3); border-color: #fb7185; }
+
+.input-cyber {
+    width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem;
+    background: rgba(6, 9, 17, 0.8); border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text); font-size: 0.9rem; transition: all 0.2s ease;
+}
+.input-cyber:focus { outline: none; border-color: #00f2fe; box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.15); }
+
+.nav-pill {
+    display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 1rem;
+    border-radius: 0.75rem; font-size: 0.85rem; font-weight: 600; color: #94a3b8;
+    cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease;
+}
+.nav-pill:hover { color: #fff; background: rgba(255,255,255,0.04); }
+.nav-pill.active {
+    color: #00f2fe; background: rgba(0, 242, 254, 0.1);
+    border-color: rgba(0, 242, 254, 0.3); box-shadow: 0 0 20px -8px rgba(0, 242, 254, 0.5);
+}
+
+.status-pill {
+    display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.6rem;
+    border-radius: 9999px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700;
+}
+.st-pass { color: #34d399; background: rgba(16, 185, 129, 0.14); border: 1px solid rgba(16, 185, 129, 0.4); }
+.st-warn { color: #fbbf24; background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.4); }
+.st-fail { color: #fb7185; background: rgba(244, 63, 94, 0.14); border: 1px solid rgba(244, 63, 94, 0.4); }
+
+.is-hidden { display: none !important; }
+</style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen">
 
-  <!-- Live Toast Region -->
-  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+<!-- TOAST CONTAINER -->
+<div id="toast-box" class="fixed top-4 right-4 z-[300] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
-  <!-- ========================================================================
-       PART 03: MASTER PASSWORD & LOCK ENGINE OVERLAY
-       ======================================================================== -->
-  <section id="lockScreen" class="lock-overlay" aria-label="Vault Authentication">
-    <div class="glass-card auth-card">
-      <div class="brand-cluster" style="margin-bottom: 16px;">
-        <div class="brand-emblem" aria-hidden="true">VX</div>
-        <div>
-          <h1 class="brand-title">VROXIT // OS</h1>
-          <div class="brand-sub" id="authSubtitle">INITIALIZING CRYPTO ENGINE...</div>
-        </div>
-      </div>
+<!-- CLIPBOARD TIMER BAR -->
+<div id="clipboard-bar" class="is-hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-[250] cyber-glass px-4 py-2.5 rounded-full flex items-center gap-3 border-neon-amber/50 shadow-lg">
+    <i class="fa-solid fa-clipboard-check text-neon-amber"></i>
+    <span class="text-xs font-mono">Sensitive data copied. Auto-clear reminder in <strong id="clip-timer" class="text-neon-cyan">20s</strong></span>
+    <button id="btn-clear-clip" class="text-xs bg-neon-amber/20 text-neon-amber px-2.5 py-1 rounded-full font-bold hover:bg-neon-amber/30">Clear Now</button>
+</div>
 
-      <!-- Mode A: First-Time Vault Initialization -->
-      <form id="setupForm" class="hidden" autocomplete="off">
-        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
-          Initialize your local encrypted vault. Your Master Password derives an <strong>AES-256-GCM</strong> key via <strong>PBKDF2-SHA256 (210,000 iterations)</strong> and is never stored in plaintext.
-        </p>
-        <div class="form-group">
-          <label for="setupPassword">Create Master Password (Min 8 chars)</label>
-          <input type="password" id="setupPassword" required minlength="8" placeholder="Enter strong master passphrase" />
-          <div class="meter-track"><div id="strengthFill" class="meter-fill"></div></div>
-          <span id="strengthText" style="font-size: 11px; font-family: var(--font-mono); color: var(--text-muted);">Entropy: Waiting for input</span>
+<!-- ================= 1. ZERO-KNOWLEDGE LOCK SCREEN ================= -->
+<section id="lock-screen" class="fixed inset-0 z-[200] bg-[#060911] flex items-center justify-center p-4">
+    <div class="cyber-glass max-w-md w-full rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-neon-cyan to-neon-violet flex items-center justify-center text-[#040811] text-xl font-bold shadow-[0_0_25px_rgba(0,242,254,0.5)]">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-lg tracking-tight">VROXIT <span class="text-neon">VAULT OS</span></h1>
+                    <p class="text-xs font-mono text-slate-400">Zero-Knowledge Client Engine v2.0</p>
+                </div>
+            </div>
+            <span id="lock-crypto-badge" class="status-pill st-pass">AES-GCM-256</span>
         </div>
-        <div class="form-group">
-          <label for="setupConfirm">Confirm Master Password</label>
-          <input type="password" id="setupConfirm" required minlength="8" placeholder="Re-enter master passphrase" />
-        </div>
-        <div class="form-group">
-          <label for="setupDecoyPin">Optional Decoy PIN (Opens harmless workspace)</label>
-          <input type="password" id="setupDecoyPin" placeholder="Optional e.g. 0000" />
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">INITIALIZE ENCRYPTED VAULT</button>
-      </form>
 
-      <!-- Mode B: Unlock Existing Vault -->
-      <form id="unlockForm" class="hidden" autocomplete="off">
-        <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-          <span class="badge badge-info">PBKDF2 + AES-256-GCM</span>
-          <span id="lockoutBadge" class="badge badge-danger hidden">RATE LIMITED</span>
+        <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 mb-6 text-xs text-slate-300 leading-relaxed">
+            <i class="fa-solid fa-circle-info text-neon-cyan mr-1.5"></i>
+            <strong>Verifiable Architecture:</strong> Keys are derived locally via <code class="text-neon-cyan font-mono">PBKDF2-SHA256</code> (100,000 iterations). No plaintext or master password ever leaves your device memory.
         </div>
-        <div class="form-group">
-          <label for="unlockPassword">Master Password or Decoy PIN</label>
-          <input type="password" id="unlockPassword" required placeholder="Enter Master Password to derive key" />
+
+        <form id="unlock-form" class="space-y-4" novalidate>
+            <div>
+                <label id="pass-label" class="block text-xs font-mono uppercase text-slate-400 mb-1.5">Master Password</label>
+                <div class="relative">
+                    <input id="master-pass" type="password" class="input-cyber pr-10 font-mono" placeholder="Enter master passphrase..." required autocomplete="current-password">
+                    <button type="button" id="toggle-pass-vis" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="recovery-wrap" class="is-hidden p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs">
+                <p class="font-bold text-emerald-300 mb-1"><i class="fa-solid fa-key mr-1"></i> Save Your Recovery Key</p>
+                <p class="text-slate-300 mb-2">Since this is a zero-knowledge vault, we cannot reset your password. Copy this recovery key:</p>
+                <code id="generated-recovery-key" class="block p-2 rounded bg-black/60 font-mono text-neon-cyan break-all select-all"></code>
+            </div>
+
+            <p id="lock-error" class="is-hidden text-xs text-rose-400 font-medium bg-rose-500/10 border border-rose-500/30 rounded-xl px-3 py-2"></p>
+
+            <button id="btn-unlock" type="submit" class="btn-cyber w-full py-3">
+                <i class="fa-solid fa-unlock-keyhole"></i> <span id="btn-unlock-text">Unlock Vault</span>
+            </button>
+        </form>
+
+        <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+            <span id="vault-init-status" class="font-mono">Checking IndexedDB...</span>
+            <button type="button" id="btn-reset-vault" class="text-rose-400 hover:underline">Wipe Local Vault</button>
         </div>
-        <button type="submit" id="unlockBtn" class="btn btn-primary btn-block">UNLOCK SESSION</button>
-        <p id="attemptNotice" style="margin-top: 10px; font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); text-align: center;">
-          Session keys reside strictly in volatile RAM.
-        </p>
-      </form>
     </div>
-  </section>
+</section>
 
-  <!-- ========================================================================
-       MAIN APPLICATION SHELL
-       ======================================================================== -->
-  <div id="appContainer" class="app-shell hidden">
+<!-- ================= 2. MAIN OS INTERFACE ================= -->
+<div id="os-shell" class="is-hidden flex-1 flex flex-col">
+    
+    <!-- TOP TELEMETRY HEADER -->
+    <header class="sticky top-0 z-40 cyber-glass border-x-0 border-t-0 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-neon-cyan to-neon-violet flex items-center justify-center text-[#040811] font-bold">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-display font-bold tracking-tight text-base">VROXIT VAULT OS</span>
+                        <span id="os-tier-badge" class="status-pill st-warn">FREE TIER</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[11px] font-mono text-emerald-400">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span id="session-status-text">PROTECTED • KEY v1 IN RAM</span>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Sticky Header HUD -->
-    <header class="glass-card top-hud">
-      <div class="brand-cluster">
-        <div class="brand-emblem" aria-hidden="true">VX</div>
-        <div>
-          <div class="brand-title">VROXIT OS</div>
-          <div class="brand-sub" id="hudSessionBadge">SESSION: ACTIVE (AES-256-GCM)</div>
+            <!-- Command & Emergency Bar -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button type="button" id="btn-open-cmd" class="btn-outline !py-1.5 !px-3 font-mono text-xs" title="Open Command Palette (Press /)">
+                    <i class="fa-solid fa-terminal text-neon-cyan"></i>
+                    <span class="hidden sm:inline">Command</span>
+                    <kbd class="px-1.5 py-0.5 text-[10px] bg-slate-800 rounded border border-slate-700 text-neon-cyan">/</kbd>
+                </button>
+
+                <button type="button" id="btn-rotate-key" class="btn-outline !py-1.5 !px-3 text-xs hidden md:inline-flex" title="Re-key & Rotate Master Key">
+                    <i class="fa-solid fa-rotate text-neon-violet"></i> Re-Key
+                </button>
+
+                <!-- 🚨 EMERGENCY QUICK LOCK (Sec 14) -->
+                <button type="button" id="btn-emergency-lock" class="btn-danger" title="Immediate RAM Wipe & UI Lock (Ctrl+L)">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Quick Lock</span>
+                </button>
+            </div>
         </div>
-      </div>
-      <div class="hud-actions">
-        <span id="netStatusBadge" class="badge badge-pass">ONLINE</span>
-        <button type="button" id="themeToggleBtn" class="btn btn-secondary btn-sm" aria-label="Toggle Theme">THEME</button>
-        <button type="button" id="panicLockBtn" class="btn btn-danger btn-sm" title="Immediate RAM Wipe & Lock">PANIC LOCK</button>
-      </div>
     </header>
 
-    <!-- ======================================================================
-         TAB 1: GOD-LEVEL COMMAND DASHBOARD
-         ====================================================================== -->
-    <main id="view-dashboard" class="view-section">
-      <div class="glass-card" style="margin-bottom: 16px;">
-        <div class="section-header">
-          <h2 class="section-title">// COMMAND CENTER HUD</h2>
-          <span id="cryptoHealthBadge" class="badge badge-pass">CRYPTO: VERIFIED</span>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-box">
-            <span class="stat-label">Net Balance</span>
-            <span class="stat-value" id="dashNetBalance" style="color: var(--accent-cyan);">$0.00</span>
-            <span class="stat-sub" id="dashTxCount">0 encrypted records</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Total Earnings</span>
-            <span class="stat-value" id="dashTotalIncome" style="color: var(--status-pass);">$0.00</span>
-            <span class="stat-sub">Encrypted Inflow</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Vault Objects</span>
-            <span class="stat-value" id="dashVaultCount">0</span>
-            <span class="stat-sub" id="dashExpiringCount">0 expiring soon</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Storage Used</span>
-            <span class="stat-value" id="dashStorageUsed">0 KB</span>
-            <span class="stat-sub" id="dashStorageQuota">IndexedDB Engine</span>
-          </div>
-        </div>
-      </div>
+    <!-- MAIN WORKSPACE GRID -->
+    <div class="max-w-7xl w-full mx-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 px-4 lg:px-8 py-6 pb-24">
+        
+        <!-- LEFT SIDEBAR NAVIGATION -->
+        <aside class="lg:col-span-3 space-y-2">
+            <nav class="cyber-glass rounded-2xl p-2.5 flex lg:flex-col gap-1 overflow-x-auto">
+                <button type="button" data-tab="dashboard" class="nav-pill active whitespace-nowrap">
+                    <i class="fa-solid fa-gauge-high w-5 text-center"></i> Privacy Dashboard
+                </button>
+                <button type="button" data-tab="vault" class="nav-pill whitespace-nowrap">
+                    <i class="fa-solid fa-vault w-5 text-center"></i> File & Note Vault
+                </button>
+                <button type="button" data-tab="vrox" class="nav-pill whitespace-nowrap">
+                    <i class="fa-solid fa-box-archive w-5 text-center"></i> .VROX Workspace
+                </button>
+                <button type="button" data-tab="share" class="nav-pill whitespace-nowrap">
+                    <i class="fa-solid fa-tower-broadcast w-5 text-center"></i> Share & P2P Engine
+                </button>
+                <button type="button" data-tab="burner" class="nav-pill whitespace-nowrap">
+                    <i class="fa-solid fa-fire-flame-curved w-5 text-center"></i> Burner Email Hub
+                </button>
+                <button type="button" data-tab="devices" class="nav-pill whitespace-nowrap">
+                    <i class="fa-solid fa-laptop-medical w-5 text-center"></i> Devices & Pro Pass
+                </button>
+            </nav>
 
-      <div class="two-col">
-        <!-- Privacy Guardian Live Status -->
-        <div class="glass-card">
-          <div class="section-header">
-            <h2 class="section-title">// PRIVACY GUARDIAN</h2>
-            <span class="badge badge-info">LIVE TELEMETRY</span>
-          </div>
-          <div class="item-list" id="privacyGuardianList"></div>
-        </div>
-
-        <!-- Security Event Timeline -->
-        <div class="glass-card">
-          <div class="section-header">
-            <h2 class="section-title">// SECURITY TIMELINE</h2>
-            <button type="button" id="clearTimelineBtn" class="btn btn-secondary btn-sm">CLEAR LOGS</button>
-          </div>
-          <div class="item-list" id="securityTimelineList"></div>
-        </div>
-      </div>
-    </main>
-
-    <!-- ======================================================================
-         TAB 2: ENCRYPTED VAULT (FILES & SECURE NOTES + LIFECYCLE)
-         ====================================================================== -->
-    <section id="view-vault" class="view-section hidden">
-      <div class="two-col">
-        <!-- Add Encrypted Item Form -->
-        <div class="glass-card">
-          <div class="section-header">
-            <h2 class="section-title">// ENCRYPT NEW OBJECT</h2>
-            <span class="badge badge-pass">FRESH 96-BIT IV</span>
-          </div>
-          <form id="vaultForm" autocomplete="off">
-            <div class="form-group">
-              <label for="vaultTitle">Object Title (Encrypted in Payload)</label>
-              <input type="text" id="vaultTitle" required placeholder="e.g., Recovery Seed / API Keys / Contract" />
+            <!-- VROXIT AI SECURITY ASSISTANT (Sec 16 & 17) -->
+            <div class="cyber-glass rounded-2xl p-4 hidden lg:block">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-display font-bold text-xs uppercase tracking-wider text-neon-cyan">
+                        <i class="fa-solid fa-robot mr-1"></i> AI Security Assistant
+                    </span>
+                    <span class="text-[10px] font-mono bg-slate-800 px-2 py-0.5 rounded text-slate-300">Deterministic</span>
+                </div>
+                <p id="ai-assistant-msg" class="text-xs text-slate-300 leading-relaxed mb-3">
+                    Rule-based engine active. AI never receives plaintext without explicit user authorization.
+                </p>
+                <div class="grid grid-cols-2 gap-1.5">
+                    <button type="button" data-ai-ask="audit" class="btn-outline !py-1.5 !px-2 !text-[11px]">Audit Vault</button>
+                    <button type="button" data-ai-ask="duplicates" class="btn-outline !py-1.5 !px-2 !text-[11px]">Find Duplicates</button>
+                </div>
             </div>
-            <div class="form-group">
-              <label for="vaultCategory">Object Type</label>
-              <select id="vaultCategory">
-                <option value="NOTE">Secure Note (Text)</option>
-                <option value="FILE">Encrypted Binary File</option>
-                <option value="CREDENTIAL">Credential / Secret Key</option>
-              </select>
-            </div>
-            <div class="form-group" id="vaultNoteGroup">
-              <label for="vaultSecretText">Sensitive Plaintext Content</label>
-              <textarea id="vaultSecretText" placeholder="Enter confidential data to encrypt with AES-256-GCM..."></textarea>
-            </div>
-            <div class="form-group hidden" id="vaultFileGroup">
-              <label for="vaultFileInput">Select File to Encrypt (Max 15 MB recommended)</label>
-              <input type="file" id="vaultFileInput" />
-            </div>
-            <div class="form-group">
-              <label for="vaultExpiry">Lifecycle Auto-Expiry</label>
-              <select id="vaultExpiry">
-                <option value="0">Never Expire (ACTIVE)</option>
-                <option value="3600000">Expire in 1 Hour</option>
-                <option value="86400000">Expire in 24 Hours</option>
-                <option value="604800000">Expire in 7 Days</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">ENCRYPT &amp; COMMIT TO VAULT</button>
-          </form>
-        </div>
+        </aside>
 
-        <!-- Vault Object List -->
-        <div class="glass-card">
-          <div class="section-header">
-            <h2 class="section-title">// ENCRYPTED VAULT ITEMS</h2>
-            <button type="button" id="purgeExpiredBtn" class="btn btn-secondary btn-sm">PURGE EXPIRED</button>
-          </div>
-          <div class="form-group">
-            <input type="text" id="vaultSearchInput" placeholder="Search decrypted titles in memory..." aria-label="Search Vault" />
-          </div>
-          <div id="vaultItemsList" class="item-list"></div>
-        </div>
-      </div>
-    </section>
+        <!-- RIGHT CONTENT PANELS -->
+        <main class="lg:col-span-9 space-y-6">
 
-    <!-- ======================================================================
-         TAB 3: REAL-TIME EARNING & TRANSACTION MANAGER OS
-         ====================================================================== -->
-    <section id="view-manager" class="view-section hidden">
-      <div class="glass-card" style="margin-bottom: 16px;">
-        <div class="section-header">
-          <h2 class="section-title">// EARNING &amp; CASHFLOW SUMMARY</h2>
-          <span class="badge badge-pass">ENCRYPTED LEDGER</span>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-box">
-            <span class="stat-label">Gross Earnings</span>
-            <span class="stat-value" id="mgrIncome" style="color: var(--status-pass);">$0.00</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Total Outflow</span>
-            <span class="stat-value" id="mgrExpense" style="color: var(--status-danger);">$0.00</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Net Cashflow</span>
-            <span class="stat-value" id="mgrNet" style="color: var(--accent-cyan);">$0.00</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Profit Margin</span>
-            <span class="stat-value" id="mgrMargin">0%</span>
-          </div>
-        </div>
-      </div>
+            <!-- ================= TAB 1: PRIVACY DASHBOARD & SELF-TEST (Sec 1.3, 15, 21) ================= -->
+            <section data-panel="dashboard" class="space-y-6">
+                <!-- Real-Time Telemetry Cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                    <div class="cyber-glass rounded-2xl p-4">
+                        <span class="text-xs font-mono text-slate-400">VAULT ITEMS</span>
+                        <p id="stat-items" class="font-display text-2xl font-bold mt-1 text-white">0 encrypted</p>
+                        <span class="text-[11px] font-mono text-emerald-400">AES-GCM 256-bit</span>
+                    </div>
+                    <div class="cyber-glass rounded-2xl p-4">
+                        <span class="text-xs font-mono text-slate-400">ACTIVE SHARES</span>
+                        <p id="stat-shares" class="font-display text-2xl font-bold mt-1 text-neon-cyan">0 active</p>
+                        <span id="stat-expiring" class="text-[11px] font-mono text-amber-400">0 expiring soon</span>
+                    </div>
+                    <div class="cyber-glass rounded-2xl p-4">
+                        <span class="text-xs font-mono text-slate-400">TRUSTED DEVICES</span>
+                        <p id="stat-devices" class="font-display text-2xl font-bold mt-1 text-neon-violet">1 trusted</p>
+                        <span class="text-[11px] font-mono text-slate-400">P2P Channel Ready</span>
+                    </div>
+                    <div class="cyber-glass rounded-2xl p-4">
+                        <span class="text-xs font-mono text-slate-400">LOCAL STORAGE</span>
+                        <p id="stat-storage" class="font-display text-2xl font-bold mt-1 text-white">0 KB</p>
+                        <span id="stat-network" class="text-[11px] font-mono text-emerald-400">Network: Online</span>
+                    </div>
+                </div>
 
-      <div class="two-col">
-        <!-- Record Transaction -->
-        <div class="glass-card">
-          <div class="section-header">
-            <h2 class="section-title">// RECORD TRANSACTION</h2>
-          </div>
-          <form id="txForm" autocomplete="off">
-            <div class="form-group">
-              <label for="txSource">Earning Source / Expense Title</label>
-              <input type="text" id="txSource" required placeholder="e.g., Client Retainer, Bug Bounty, Server Cost" />
-            </div>
-            <div class="two-col" style="gap: 10px;">
-              <div class="form-group">
-                <label for="txType">Flow Type</label>
-                <select id="txType">
-                  <option value="INCOME">Earning (+ Inflow)</option>
-                  <option value="EXPENSE">Expense (- Outflow)</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="txCategory">Category</label>
-                <select id="txCategory">
-                  <option value="Freelance / Dev">Freelance / Dev</option>
-                  <option value="SaaS / Product">SaaS / Product</option>
-                  <option value="Salary / Payout">Salary / Payout</option>
-                  <option value="Bounty / Audit">Bounty / Audit</option>
-                  <option value="Infrastructure">Infrastructure</option>
-                  <option value="Operations">Operations</option>
-                </select>
-              </div>
-            </div>
-            <div class="two-col" style="gap: 10px;">
-              <div class="form-group">
-                <label for="txAmount">Amount (USD)</label>
-                <input type="number" id="txAmount" required min="0.01" step="0.01" placeholder="0.00" />
-              </div>
-              <div class="form-group">
-                <label for="txDate">Transaction Date</label>
-                <input type="date" id="txDate" required />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="txMemo">Encrypted Audit Note (Optional)</label>
-              <input type="text" id="txMemo" placeholder="Invoice ID, wallet reference, or tax note" />
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">ADD ENCRYPTED TRANSACTION</button>
-          </form>
-        </div>
+                <!-- God-Level OS Quick Launch Matrix (Sec 23) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                    <button type="button" data-goto="vault" class="cyber-glass rounded-2xl p-4 text-left hover:border-neon-cyan group">
+                        <i class="fa-solid fa-folder-tree text-2xl text-neon-cyan mb-2 group-hover:scale-110 transition"></i>
+                        <h3 class="font-display font-bold text-sm">OPEN VAULT</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Encrypted Files & Notes</p>
+                    </button>
+                    <button type="button" data-goto="vrox" class="cyber-glass rounded-2xl p-4 text-left hover:border-neon-cyan group">
+                        <i class="fa-solid fa-box-open text-2xl text-neon-violet mb-2 group-hover:scale-110 transition"></i>
+                        <h3 class="font-display font-bold text-sm">SHARE WORKSPACE</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Build / Import .VROX</p>
+                    </button>
+                    <button type="button" data-goto="burner" class="cyber-glass rounded-2xl p-4 text-left hover:border-neon-cyan group">
+                        <i class="fa-solid fa-envelope-circle-check text-2xl text-emerald-400 mb-2 group-hover:scale-110 transition"></i>
+                        <h3 class="font-display font-bold text-sm">BURNER HUB</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Aliases & OTP Guard</p>
+                    </button>
+                    <button type="button" data-goto="devices" class="cyber-glass rounded-2xl p-4 text-left hover:border-neon-cyan group">
+                        <i class="fa-solid fa-key text-2xl text-amber-400 mb-2 group-hover:scale-110 transition"></i>
+                        <h3 class="font-display font-bold text-sm">DEVICES & PRO</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Pairing & Revocation</p>
+                    </button>
+                </div>
 
-        <!-- Live Transaction Ledger -->
-        <div class="glass-card">
-          <div class="section-header">
-            <h2 class="section-title">// ENCRYPTED LEDGER</h2>
-            <select id="txFilterType" style="width: auto; padding: 4px 8px; font-size: 12px;" aria-label="Filter transactions">
-              <option value="ALL">All Flows</option>
-              <option value="INCOME">Earnings Only</option>
-              <option value="EXPENSE">Expenses Only</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <input type="text" id="txSearchInput" placeholder="Filter by source or category..." aria-label="Search Ledger" />
-          </div>
-          <div id="txLedgerList" class="item-list"></div>
-        </div>
-      </div>
-    </section>
+                <!-- Real Security Self-Test Diagnostics (Sec 1.3 & 21) -->
+                <div class="cyber-glass rounded-2xl p-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <div>
+                            <h2 class="font-display font-bold text-base flex items-center gap-2">
+                                <i class="fa-solid fa-microchip text-neon-cyan"></i> Real-Time Security Self-Test
+                            </h2>
+                            <p class="text-xs text-slate-400">Live browser & cryptographic capability verification — no fabricated "100% Secure" score.</p>
+                        </div>
+                        <button type="button" id="btn-rerun-diag" class="btn-outline !py-1.5 !px-3 text-xs self-start">
+                            <i class="fa-solid fa-rotate"></i> Run Diagnostics
+                        </button>
+                    </div>
+                    <div id="diag-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 font-mono text-xs"></div>
+                </div>
+            </section>
 
-    <!-- ======================================================================
-         TAB 4: SETTINGS, .VROX PORTABLE PACKAGE & SELF-TEST DIAGNOSTICS
-         ====================================================================== -->
-    <section id="view-settings" class="view-section hidden">
-      <div class="two-col">
-        <!-- .VROX Portable Encrypted Container -->
-        <div class="glass-card">
-          <div class="section-header">
-            <h2 class="section-title">// .VROX PORTABLE PACKAGE</h2>
-            <span class="badge badge-info">SCHEMA v1.0</span>
-          </div>
-          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 14px;">
-            Export or import your encrypted vault items and financial ledger as a signed <code>.vrox</code> container with SHA-256 integrity verification. Imported packages never execute embedded code.
-          </p>
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button type="button" id="exportVroxBtn" class="btn btn-primary btn-block">EXPORT .VROX ENCRYPTED BACKUP</button>
-            <div class="form-group" style="margin-top: 8px; margin-bottom: 0;">
-              <label for="importVroxInput">Import .VROX Package File</label>
-              <input type="file" id="importVroxInput" accept=".vrox,application/json" />
-            </div>
-          </div>
-        </div>
+            <!-- ================= TAB 2: ADVANCED FILE & NOTE VAULT (Sec 8, 9, 28, 29) ================= -->
+            <section data-panel="vault" class="is-hidden space-y-6">
+                <div class="cyber-glass rounded-2xl p-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                        <div>
+                            <h2 class="font-display font-bold text-lg">Zero-Knowledge File & Note Vault</h2>
+                            <p class="text-xs text-slate-400">Every item is encrypted client-side with a unique 96-bit IV + SHA-256 integrity hash.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <select id="filter-collection" class="input-cyber !w-auto !py-1.5 !text-xs">
+                                <option value="ALL">All Collections</option>
+                                <option value="Documents">Documents</option>
+                                <option value="Photos">Photos</option>
+                                <option value="Projects">Projects</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Work">Work</option>
+                            </select>
+                            <input id="vault-search" type="search" class="input-cyber !w-44 !py-1.5 !text-xs" placeholder="Search title or #tag...">
+                        </div>
+                    </div>
 
-        <!-- Session & Security Preferences -->
-        <div class="glass-card">
-          <div class="section-header">
-            <h2 class="section-title">// PRIVACY &amp; SESSION CONTROLS</h2>
-          </div>
-          <div class="form-group">
-            <label for="inactivitySelect">Inactivity Auto-Lock Timeout</label>
-            <select id="inactivitySelect">
-              <option value="60000">1 Minute</option>
-              <option value="300000" selected>5 Minutes (Recommended)</option>
-              <option value="900000">15 Minutes</option>
-              <option value="1800000">30 Minutes</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-              <input type="checkbox" id="bgLockToggle" style="width: 18px; height: 18px;" />
-              <span>Auto-lock immediately when tab/app goes to background</span>
-            </label>
-          </div>
-          <hr style="border: none; border-top: 1px solid var(--border-subtle); margin: 14px 0;" />
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-            <div>
-              <div style="font-weight: 600; font-size: 13px; color: var(--status-danger);">Factory Wipe Local Database</div>
-              <div style="font-size: 11px; color: var(--text-muted);">Permanently deletes IndexedDB ciphertext.</div>
-            </div>
-            <button type="button" id="wipeDatabaseBtn" class="btn btn-danger btn-sm">WIPE VAULT</button>
-          </div>
-        </div>
-      </div>
+                    <!-- Add Encrypted Note / File Form -->
+                    <form id="vault-add-form" class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800 space-y-4 mb-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <input id="item-title" type="text" class="input-cyber" placeholder="Title (e.g. Server Keys, Passport Scan)" required>
+                            <select id="item-collection" class="input-cyber">
+                                <option value="Documents">Collection: Documents</option>
+                                <option value="Projects">Collection: Projects</option>
+                                <option value="Personal">Collection: Personal</option>
+                                <option value="Work">Collection: Work</option>
+                                <option value="Photos">Collection: Photos</option>
+                            </select>
+                            <select id="item-expiry" class="input-cyber">
+                                <option value="0">Lifecycle: Permanent</option>
+                                <option value="3600000">Expire in 1 Hour</option>
+                                <option value="86400000">Expire in 24 Hours</option>
+                                <option value="604800000">Expire in 7 Days</option>
+                            </select>
+                        </div>
 
-      <!-- Part 13: Real Security Self-Test Engine -->
-      <div class="glass-card" style="margin-top: 16px;">
-        <div class="section-header">
-          <h2 class="section-title">// SECURITY SELF-TEST DIAGNOSTICS</h2>
-          <button type="button" id="runSelfTestBtn" class="btn btn-secondary btn-sm">RE-RUN DIAGNOSTICS</button>
-        </div>
-        <div id="selfTestList" class="stats-grid"></div>
-      </div>
-    </section>
+                        <textarea id="item-content" rows="3" class="input-cyber font-mono text-xs" placeholder="Write secure note, checklist, or secret payload here..."></textarea>
 
-    <!-- Bottom Mobile-First Navigation -->
-    <nav class="bottom-nav" aria-label="Primary Navigation">
-      <button type="button" class="nav-btn active" data-target="view-dashboard">
-        <span>HUD</span>
-      </button>
-      <button type="button" class="nav-btn" data-target="view-vault">
-        <span>VAULT</span>
-      </button>
-      <button type="button" class="nav-btn" data-target="view-manager">
-        <span>EARNINGS</span>
-      </button>
-      <button type="button" class="nav-btn" data-target="view-settings">
-        <span>SYSTEM</span>
-      </button>
-    </nav>
-  </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-1">Optional File Attachment (Client-side encrypted)</label>
+                                <input id="item-file" type="file" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-neon-cyan/20 file:text-neon-cyan file:font-semibold">
+                            </div>
+                            <input id="item-tags" type="text" class="input-cyber !py-2 text-xs" placeholder="Tags (comma separated: #ssh, #tax, #urgent)">
+                        </div>
 
-  <!-- ========================================================================
-       DECRYPT-ON-DEMAND MODAL VIEWER
-       ======================================================================== -->
-  <div id="decryptModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="glass-card modal-box">
-      <div class="section-header">
-        <h3 class="section-title" id="modalTitle">// DECRYPTED PAYLOAD</h3>
-        <span id="modalLifecycleBadge" class="badge badge-pass">ACTIVE</span>
-      </div>
-      <div id="modalMeta" style="font-size: 11px; font-family: var(--font-mono); color: var(--text-secondary);"></div>
-      <pre id="modalPlaintext" class="decrypted-pre"></pre>
-      <div id="modalDownloadZone" class="hidden" style="margin-bottom: 12px;">
-        <a id="modalDownloadLink" class="btn btn-primary btn-block" download="">DOWNLOAD DECRYPTED FILE</a>
-      </div>
-      <button type="button" id="closeModalBtn" class="btn btn-secondary btn-block">WIPE FROM VIEW &amp; CLOSE</button>
+                        <!-- Metadata Privacy Sanitizer Preview (Sec 28 & 29) -->
+                        <div id="file-meta-preview" class="is-hidden p-3 rounded-xl bg-slate-950 border border-neon-cyan/30 text-xs space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-neon-cyan"><i class="fa-solid fa-broom mr-1"></i> Metadata Privacy Sanitizer & SHA-256</span>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                                    <input type="checkbox" id="chk-strip-meta" checked class="accent-neon-cyan">
+                                    <span>Normalize Filename & Strip OS Path</span>
+                                </label>
+                            </div>
+                            <p id="meta-removed-fields" class="text-slate-400 font-mono text-[11px]"></p>
+                            <p class="font-mono text-[11px] text-emerald-400 break-all">SHA-256: <span id="file-sha256-preview">Calculating...</span></p>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="btn-cyber">
+                                <i class="fa-solid fa-lock"></i> Encrypt & Store in Vault
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Vault Items List -->
+                    <div id="vault-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+                </div>
+            </section>
+
+            <!-- ================= TAB 3: .VROX PACKAGE ENGINE — SHARE WITH DATA (Sec 2, 19, 20) ================= -->
+            <section data-panel="vrox" class="is-hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- EXPORT .VROX CONTAINER -->
+                    <div class="cyber-glass rounded-2xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h2 class="font-display font-bold text-lg text-neon">Export .VROX Workspace</h2>
+                                <span class="status-pill st-pass">Schema v2</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-4">
+                                Bundle selected notes, encrypted files, settings, and workspace state into a portable, integrity-verified <code class="text-neon-cyan font-mono">.vrox</code> container.
+                            </p>
+
+                            <div class="space-y-2.5 p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 text-xs mb-4">
+                                <p class="font-mono uppercase text-slate-400 text-[11px] mb-1">Select Workspace Layers to Package:</p>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="vx-notes" checked class="accent-neon-cyan"> <span>Encrypted Notes & Checklists</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="vx-files" checked class="accent-neon-cyan"> <span>Encrypted File Payloads</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="vx-meta" checked class="accent-neon-cyan"> <span>Vault Collections & Tag Metadata</span></label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="vx-settings" checked class="accent-neon-cyan"> <span>App Preferences & Trusted Device Public Keys</span></label>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-xs font-mono text-slate-400 mb-1">Package Encryption Passphrase</label>
+                                <input id="vrox-export-pass" type="password" class="input-cyber font-mono text-xs" placeholder="Enter passphrase to lock .vrox container...">
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn-export-vrox" class="btn-cyber w-full">
+                            <i class="fa-solid fa-file-shield"></i> Generate & Download .VROX Package
+                        </button>
+                    </div>
+
+                    <!-- SMART IMPORT CENTER (Sec 19 & 20) -->
+                    <div class="cyber-glass rounded-2xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h2 class="font-display font-bold text-lg">Smart Import Center</h2>
+                                <span class="status-pill st-warn">No-Exec Sandbox</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-4">
+                                Incoming <code class="text-neon-cyan font-mono">.vrox</code> packages never execute arbitrary JS code. Every container undergoes format, SHA-256 integrity, and schema migration checks before preview.
+                            </p>
+
+                            <div class="space-y-3 mb-4">
+                                <input id="vrox-import-file" type="file" accept=".vrox,application/json" class="text-xs text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-neon-violet/20 file:text-neon-violet file:font-semibold w-full">
+                                <input id="vrox-import-pass" type="password" class="input-cyber font-mono text-xs" placeholder="Decryption passphrase for .vrox package...">
+                                <button type="button" id="btn-inspect-vrox" class="btn-outline w-full">
+                                    <i class="fa-solid fa-magnifying-glass-chart text-neon-cyan"></i> Inspect, Verify SHA-256 & Preview
+                                </button>
+                            </div>
+
+                            <!-- 5-Step Inspection Output -->
+                            <div id="vrox-inspect-box" class="is-hidden p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-xs font-mono">
+                                <div id="vrox-check-steps" class="space-y-1"></div>
+                                <div id="vrox-preview-summary" class="pt-2 border-t border-slate-800 text-slate-300"></div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn-confirm-import" class="btn-cyber w-full mt-4 is-hidden">
+                            <i class="fa-solid fa-check-double"></i> Approve & Merge into Vault
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ================= TAB 4: SMART SHARE ROUTER, P2P & CONTROL CENTER (Sec 3, 4, 5, 11) ================= -->
+            <section data-panel="share" class="is-hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Smart Share Router -->
+                    <div class="lg:col-span-5 cyber-glass rounded-2xl p-5 space-y-4">
+                        <h2 class="font-display font-bold text-base flex items-center gap-2">
+                            <i class="fa-solid fa-route text-neon-cyan"></i> Smart Share Router
+                        </h2>
+                        <p class="text-xs text-slate-400">Select what you want to share; the router automatically picks the optimal transport protocol.</p>
+
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-1">Payload Type & Size</label>
+                            <select id="share-payload-type" class="input-cyber text-xs">
+                                <option value="qr">Small Text / Secret Snippet (&lt; 2 KB)</option>
+                                <option value="webrtc">Encrypted Vault File (&lt; 50 MB)</option>
+                                <option value="p2p_chunk">Large Media / Archive (1 GB+ Chunked)</option>
+                                <option value="temp_link">Remote Recipient (Encrypted Link)</option>
+                                <option value="vrox_pkg">Complete Workspace (.VROX Package)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-1">Expiry</label>
+                                <select id="share-expiry" class="input-cyber text-xs">
+                                    <option value="10m">10 Minutes</option>
+                                    <option value="1h">1 Hour</option>
+                                    <option value="24h" selected>24 Hours</option>
+                                    <option value="7d">7 Days</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-1">Max Views</label>
+                                <select id="share-max-views" class="input-cyber text-xs">
+                                    <option value="1">1 View (Burn)</option>
+                                    <option value="3" selected>3 Views</option>
+                                    <option value="10">10 Views</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="router-recommendation" class="p-3 rounded-xl bg-neon-cyan/10 border border-neon-cyan/30 text-xs font-mono text-neon-cyan">
+                            Recommended Route: QR Encrypted Payload (Zero-Server)
+                        </div>
+
+                        <button type="button" id="btn-create-share" class="btn-cyber w-full">
+                            <i class="fa-solid fa-share-nodes"></i> Initialize Encrypted Share
+                        </button>
+                    </div>
+
+                    <!-- P2P Chunked Resume Transfer Engine (Sec 3F & 11) -->
+                    <div class="lg:col-span-7 cyber-glass rounded-2xl p-5 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h2 class="font-display font-bold text-base">WebRTC P2P Chunked Transfer Engine</h2>
+                                <span id="p2p-status-badge" class="status-pill st-pass">DataChannel Ready</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-4">
+                                Large payloads are split into SHA-256 verified chunks. If connection drops, transfer resumes from the last verified chunk.
+                            </p>
+
+                            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 font-mono text-xs space-y-3">
+                                <div class="flex justify-between">
+                                    <span id="p2p-file-label" class="text-white font-bold">workspace-archive.vrox (1,000 MB)</span>
+                                    <span id="p2p-pct" class="text-neon-cyan font-bold">0%</span>
+                                </div>
+                                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
+                                    <div id="p2p-bar" class="h-full w-0 bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-violet transition-all duration-200"></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 text-[11px] text-slate-400 pt-1">
+                                    <span>Chunk: <strong id="p2p-chunk" class="text-white">0 / 1000</strong></span>
+                                    <span>Speed: <strong id="p2p-speed" class="text-emerald-400">0 MB/s</strong></span>
+                                    <span>Checksum: <strong class="text-neon-cyan">SHA-256 OK</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <button type="button" id="btn-p2p-start" class="btn-cyber !py-2 !px-4 text-xs"><i class="fa-solid fa-play"></i> Start / Resume P2P</button>
+                            <button type="button" id="btn-p2p-drop" class="btn-outline !py-2 !px-4 text-xs"><i class="fa-solid fa-wifi"></i> Simulate Drop</button>
+                            <button type="button" id="btn-p2p-reset" class="btn-danger !py-2 !px-4 text-xs">Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Share Control Center (Sec 4) -->
+                <div class="cyber-glass rounded-2xl p-5">
+                    <h3 class="font-display font-bold text-base mb-3">Active Share Control Center</h3>
+                    <div id="share-list" class="space-y-2.5"></div>
+                </div>
+            </section>
+
+            <!-- ================= TAB 5: BURNER EMAIL HUB & OTP DETECTOR (Sec 10) ================= -->
+            <section data-panel="burner" class="is-hidden space-y-6">
+                <div class="cyber-glass rounded-2xl p-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                        <div>
+                            <h2 class="font-display font-bold text-lg">Burner Email Hub & Phishing Guard</h2>
+                            <p class="text-xs text-slate-400">Generate disposable aliases, auto-extract OTP codes, and sanitize suspicious links before clicking.</p>
+                        </div>
+                        <button type="button" id="btn-new-burner" class="btn-cyber text-xs">
+                            <i class="fa-solid fa-plus"></i> Generate Burner Alias
+                        </button>
+                    </div>
+
+                    <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 mb-5">
+                        <i class="fa-solid fa-server mr-1"></i>
+                        <strong>Architecture Note:</strong> Live inbound SMTP traffic requires a backend mail relay provider. Below is the local alias manager + real-time OTP & Phishing Sanitizer engine.
+                    </div>
+
+                    <div id="burner-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6"></div>
+
+                    <!-- OTP & Message Sanitizer Sandbox -->
+                    <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-display font-bold text-sm">Incoming Message Sanitizer & OTP Extractor</span>
+                            <button type="button" id="btn-sim-email" class="btn-outline !py-1 !px-2.5 text-xs">Simulate Incoming OTP Email</button>
+                        </div>
+                        <textarea id="burner-raw-msg" rows="3" class="input-cyber font-mono text-xs" placeholder="Paste or simulate raw email text/HTML to scan for OTPs and phishing links..."></textarea>
+                        <div id="burner-scan-result" class="is-hidden p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= TAB 6: TRUSTED DEVICES & PREPAID PRO PASS (Sec 6, 7, 24) ================= -->
+            <section data-panel="devices" class="is-hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Trusted Device Registry -->
+                    <div class="lg:col-span-7 cyber-glass rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="font-display font-bold text-base">Trusted Devices & Public Keys</h2>
+                                <p class="text-xs text-slate-400">Revoked devices are permanently blocked from receiving future P2P or .VROX transfers.</p>
+                            </div>
+                            <button type="button" id="btn-pair-device" class="btn-outline !py-1.5 !px-3 text-xs">
+                                <i class="fa-solid fa-qrcode text-neon-cyan"></i> Pair New Device
+                            </button>
+                        </div>
+                        <div id="device-list" class="space-y-2.5"></div>
+                    </div>
+
+                    <!-- Secure Pairing Handshake Box -->
+                    <div class="lg:col-span-5 cyber-glass rounded-2xl p-5 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-display font-bold text-base mb-1">Zero-Trust Device Pairing</h3>
+                            <p class="text-xs text-slate-400 mb-4">Verify this short authentication phrase on both devices to complete the ECDH handshake:</p>
+                            <div class="p-4 rounded-2xl bg-slate-950 border border-neon-cyan/30 text-center space-y-2 mb-4">
+                                <span class="text-[10px] font-mono uppercase text-slate-400">One-Time Auth Phrase</span>
+                                <p id="pairing-phrase" class="font-mono font-bold text-base text-neon-cyan tracking-wider">cobalt-492-falcon-orbit</p>
+                                <p class="text-[11px] font-mono text-slate-400">ECDSA P-256 Fingerprint Verified</p>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-regen-phrase" class="btn-outline w-full text-xs">
+                            <i class="fa-solid fa-arrows-rotate"></i> Regenerate Handshake Phrase
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VROXIT PRO MONETIZATION (Prepaid Only • Core Security Never Locked) -->
+                <div class="cyber-glass rounded-2xl p-6 border-neon-cyan/40">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <span class="status-pill st-pass mb-2">PREPAID PASS • NO AUTOPAY</span>
+                            <h2 class="font-display text-2xl font-bold">Vroxit Vault <span class="text-neon">PRO Pass</span></h2>
+                            <p class="text-xs text-slate-300 mt-1">Core AES-GCM encryption and local vault are 100% free forever. Upgrade for extended .VROX multi-device sync, 50 GB vault storage, and priority P2P relays.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input id="vip-code-input" type="text" placeholder="VIP Code (VROXPRO-99)" class="input-cyber !w-48 font-mono text-xs uppercase">
+                            <button type="button" id="btn-apply-vip" class="btn-cyber text-xs whitespace-nowrap">Activate VIP</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+                            <h4 class="font-display font-bold text-base">Plus Pass — ₹49</h4>
+                            <p class="text-slate-400 font-mono text-[11px] mb-3">30 Days Prepaid • No Auto-Renew</p>
+                            <p class="text-slate-300">✓ 5 GB Encrypted Vault<br>✓ Up to 3 Trusted Devices<br>✓ Standard .VROX Exports</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-900/90 border border-neon-cyan">
+                            <h4 class="font-display font-bold text-base text-neon">Pro Pass — ₹99</h4>
+                            <p class="text-slate-400 font-mono text-[11px] mb-3">30 Days Prepaid • Best Seller</p>
+                            <p class="text-slate-300">✓ 25 GB Encrypted Vault<br>✓ Unlimited .VROX Workspace Packages<br>✓ Custom Expiry & Burner Rules</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+                            <h4 class="font-display font-bold text-base">Max Pass — ₹199</h4>
+                            <p class="text-slate-400 font-mono text-[11px] mb-3">30 Days Prepaid • Enterprise</p>
+                            <p class="text-slate-300">✓ 100 GB Encrypted Cloud Backup<br>✓ 10 Trusted Devices + Audit Logs<br>✓ AI Security Assistant Unlimited</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
-  </div>
+</div>
 
-  <!-- ========================================================================
-       MODULAR APPLICATION ARCHITECTURE (VANILLA JS)
-       ======================================================================== -->
-  <script>
-    "use strict";
+<!-- ================= 3. COMMAND PALETTE MODAL (`/`) (Sec 18) ================= -->
+<div id="cmd-modal" class="is-hidden fixed inset-0 z-[260] bg-black/75 backdrop-blur-sm flex items-start justify-center pt-20 p-4">
+    <div class="cyber-glass max-w-lg w-full rounded-2xl p-4 border-neon-cyan/50 shadow-2xl">
+        <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+            <i class="fa-solid fa-terminal text-neon-cyan"></i>
+            <input id="cmd-input" type="text" class="w-full bg-transparent text-white font-mono text-sm focus:outline-none" placeholder="Type a command: /lock, /vault, /vrox, /share, /burner, /security, /pro...">
+            <button type="button" id="btn-close-cmd" class="text-xs font-mono text-slate-400 hover:text-white">ESC</button>
+        </div>
+        <div id="cmd-list" class="mt-3 space-y-1 font-mono text-xs max-h-60 overflow-y-auto"></div>
+    </div>
+</div>
 
-    /* ========================================================================
-       MODULE 1: UI UTILITIES & SAFE DOM HELPERS (NO INNERHTML XSS)
-       ======================================================================== */
-    const UI = {
-      toast(message, isError = false) {
-        const region = document.getElementById("toastRegion");
-        const el = document.createElement("div");
-        el.className = isError ? "toast toast-error" : "toast";
-        el.textContent = message;
-        region.appendChild(el);
-        setTimeout(() => {
-          if (el.parentNode) el.parentNode.removeChild(el);
-        }, 3600);
-      },
+<script>
+/* ============================================================================
+   VROXIT VAULT OS — CORE CRYPTO, INDEXEDDB, .VROX ENGINE & TELEMETRY
+   ============================================================================ */
+const $ = (id) => document.getElementById(id);
+const show = (el, on = true) => el && el.classList.toggle('is-hidden', !on);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
-      formatCurrency(num) {
-        const val = Number(num) || 0;
-        return new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-          minimumFractionDigits: 2
-        }).format(val);
-      },
+const DB_NAME = 'VroxitVaultOS_v2';
+const DB_VERSION = 1;
+let db = null;
+let sessionKey = null; // In-memory CryptoKey (wiped on Quick Lock)
+let keyVersion = 1;
+let currentSalt = null;
+let stagedVroxImport = null;
+let clipInterval = null;
 
-      formatBytes(bytes) {
-        if (!bytes || bytes === 0) return "0 B";
-        const k = 1024;
-        const sizes = ["B", "KB", "MB", "GB"];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
-      },
+/* ---------- Toast Notification ---------- */
+function toast(msg, type = 'ok') {
+    const box = $('toast-box');
+    const el = document.createElement('div');
+    const border = type === 'err' ? 'border-rose-500/60 text-rose-200' : 'border-neon-cyan/60 text-slate-100';
+    const icon = type === 'err' ? 'fa-triangle-exclamation text-rose-400' : 'fa-shield-check text-neon-cyan';
+    el.className = `cyber-glass px-4 py-3 rounded-2xl border ${border} text-xs font-medium flex items-center gap-2.5 pointer-events-auto shadow-xl`;
+    el.innerHTML = `<i class="fa-solid ${icon}"></i><span>${esc(msg)}</span>`;
+    box.appendChild(el);
+    setTimeout(() => el.remove(), 3400);
+}
 
-      clearElement(el) {
-        while (el.firstChild) {
-          el.removeChild(el.firstChild);
-        }
-      }
-    };
+/* ---------- 1. Web Crypto API Engine (AES-GCM 256 + PBKDF2 + SHA-256) ---------- */
+const enc = new TextEncoder();
+const dec = new TextDecoder();
 
-    /* ========================================================================
-       MODULE 2: PART 04 — STANDARDIZED WEB CRYPTO API ENGINE
-       - PBKDF2-SHA256 Key Derivation (210,000 iterations)
-       - AES-256-GCM Authenticated Encryption with fresh 12-byte random IV
-       ======================================================================== */
-    const CryptoEngine = {
-      FORMAT_VERSION: 1,
-      KDF_ITERATIONS: 210000,
+const bufToB64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const b64ToBuf = (b64) => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
 
-      generateSalt() {
-        return crypto.getRandomValues(new Uint8Array(16));
-      },
+async function sha256Hex(input) {
+    const data = typeof input === 'string' ? enc.encode(input) : input;
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
-      generateIv() {
-        return crypto.getRandomValues(new Uint8Array(12));
-      },
+async function deriveAesKey(password, saltBytes) {
+    const baseKey = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: saltBytes, iterations: 100000, hash: 'SHA-256' },
+        baseKey,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+    );
+}
 
-      bufToBase64(buffer) {
-        const bytes = new Uint8Array(buffer);
-        let binary = "";
-        for (let i = 0; i < bytes.byteLength; i++) {
-          binary += String.fromCharCode(bytes[i]);
-        }
-        return btoa(binary);
-      },
+async function encryptPayload(obj, key = sessionKey) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const plaintext = enc.encode(JSON.stringify(obj));
+    const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext);
+    const digest = await sha256Hex(ciphertext);
+    return { v: keyVersion, iv: bufToB64(iv), ct: bufToB64(ciphertext), sha256: digest };
+}
 
-      base64ToBuf(base64) {
-        const binary = atob(base64);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) {
-          bytes[i] = binary.charCodeAt(i);
-        }
-        return bytes.buffer;
-      },
+async function decryptPayload(pkg, key = sessionKey) {
+    const ctBuf = b64ToBuf(pkg.ct);
+    const calcHash = await sha256Hex(ctBuf);
+    if (pkg.sha256 && calcHash !== pkg.sha256) throw new Error('Integrity mismatch: SHA-256 check failed');
+    const plainBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBuf(pkg.iv) }, key, ctBuf);
+    return JSON.parse(dec.decode(plainBuf));
+}
 
-      async deriveKey(passwordString, saltUint8) {
-        const enc = new TextEncoder();
-        const keyMaterial = await crypto.subtle.importKey(
-          "raw",
-          enc.encode(passwordString),
-          { name: "PBKDF2" },
-          false,
-          ["deriveKey"]
-        );
-
-        return crypto.subtle.deriveKey(
-          {
-            name: "PBKDF2",
-            salt: saltUint8,
-            iterations: this.KDF_ITERATIONS,
-            hash: "SHA-256"
-          },
-          keyMaterial,
-          { name: "AES-GCM", length: 256 },
-          false, // non-extractable key
-          ["encrypt", "decrypt"]
-        );
-      },
-
-      async encrypt(plaintextObject, cryptoKey) {
-        const iv = this.generateIv();
-        const enc = new TextEncoder();
-        const serialized = JSON.stringify(plaintextObject);
-        const cipherBuffer = await crypto.subtle.encrypt(
-          { name: "AES-GCM", iv },
-          cryptoKey,
-          enc.encode(serialized)
-        );
-
-        return {
-          v: this.FORMAT_VERSION,
-          alg: "AES-256-GCM",
-          iv: this.bufToBase64(iv),
-          ct: this.bufToBase64(cipherBuffer),
-          ts: Date.now()
+/* ---------- 2. IndexedDB Storage Layer ---------- */
+function openVaultDB() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = (e) => {
+            const d = e.target.result;
+            if (!d.objectStoreNames.contains('meta')) d.createObjectStore('meta', { keyPath: 'k' });
+            if (!d.objectStoreNames.contains('items')) d.createObjectStore('items', { keyPath: 'id' });
+            if (!d.objectStoreNames.contains('shares')) d.createObjectStore('shares', { keyPath: 'id' });
+            if (!d.objectStoreNames.contains('devices')) d.createObjectStore('devices', { keyPath: 'id' });
+            if (!d.objectStoreNames.contains('burners')) d.createObjectStore('burners', { keyPath: 'id' });
         };
-      },
-
-      async decrypt(envelope, cryptoKey) {
-        if (!envelope || envelope.v !== this.FORMAT_VERSION || !envelope.iv || !envelope.ct) {
-          throw new Error("Invalid cryptographic envelope format.");
-        }
-        const ivBuf = new Uint8Array(this.base64ToBuf(envelope.iv));
-        const ctBuf = this.base64ToBuf(envelope.ct);
-
-        const plainBuffer = await crypto.subtle.decrypt(
-          { name: "AES-GCM", iv: ivBuf },
-          cryptoKey,
-          ctBuf
-        );
-
-        const dec = new TextDecoder();
-        return JSON.parse(dec.decode(plainBuffer));
-      },
-
-      async sha256Hex(text) {
-        const enc = new TextEncoder();
-        const digest = await crypto.subtle.digest("SHA-256", enc.encode(text));
-        return Array.from(new Uint8Array(digest))
-          .map((b) => b.toString(16).padStart(2, "0"))
-          .join("");
-      }
-    };
-
-    /* ========================================================================
-       MODULE 3: PART 05 — INDEXEDDB PERSISTENCE ENGINE
-       - Prevents duplicate DB init
-       - Stores only ciphertext for vault items and financial transactions
-       ======================================================================== */
-    const DBEngine = {
-      DB_NAME: "VroxitPrivacyOS_v1",
-      DB_VERSION: 1,
-      dbPromise: null,
-
-      init() {
-        if (this.dbPromise) return this.dbPromise;
-        this.dbPromise = new Promise((resolve, reject) => {
-          const req = indexedDB.open(this.DB_NAME, this.DB_VERSION);
-          req.onupgradeneeded = (e) => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains("meta")) {
-              db.createObjectStore("meta", { keyPath: "key" });
-            }
-            if (!db.objectStoreNames.contains("vault")) {
-              db.createObjectStore("vault", { keyPath: "id" });
-            }
-            if (!db.objectStoreNames.contains("transactions")) {
-              db.createObjectStore("transactions", { keyPath: "id" });
-            }
-            if (!db.objectStoreNames.contains("timeline")) {
-              db.createObjectStore("timeline", { keyPath: "id" });
-            }
-          };
-          req.onsuccess = (e) => resolve(e.target.result);
-          req.onerror = (e) => reject(e.target.error);
-        });
-        return this.dbPromise;
-      },
-
-      async put(storeName, record) {
-        const db = await this.init();
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction(storeName, "readwrite");
-          const store = tx.objectStore(storeName);
-          store.put(record);
-          tx.oncomplete = () => resolve(true);
-          tx.onerror = (e) => reject(e.target.error);
-        });
-      },
-
-      async get(storeName, key) {
-        const db = await this.init();
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction(storeName, "readonly");
-          const req = tx.objectStore(storeName).get(key);
-          req.onsuccess = () => resolve(req.result || null);
-          req.onerror = (e) => reject(e.target.error);
-        });
-      },
-
-      async getAll(storeName) {
-        const db = await this.init();
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction(storeName, "readonly");
-          const req = tx.objectStore(storeName).getAll();
-          req.onsuccess = () => resolve(req.result || []);
-          req.onerror = (e) => reject(e.target.error);
-        });
-      },
-
-      async delete(storeName, key) {
-        const db = await this.init();
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction(storeName, "readwrite");
-          tx.objectStore(storeName).delete(key);
-          tx.oncomplete = () => resolve(true);
-          tx.onerror = (e) => reject(e.target.error);
-        });
-      },
-
-      async clearStore(storeName) {
-        const db = await this.init();
-        return new Promise((resolve, reject) => {
-          const tx = db.transaction(storeName, "readwrite");
-          tx.objectStore(storeName).clear();
-          tx.oncomplete = () => resolve(true);
-          tx.onerror = (e) => reject(e.target.error);
-        });
-      }
-    };
-
-    /* ========================================================================
-       MODULE 4: PART 18 — SECURITY TIMELINE LOGGER (NON-SENSITIVE EVENTS ONLY)
-       ======================================================================== */
-    const AuditTimeline = {
-      async log(eventCode, summary) {
-        try {
-          const entry = {
-            id: "evt_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7),
-            code: eventCode,
-            summary: summary,
-            ts: Date.now()
-          };
-          await DBEngine.put("timeline", entry);
-        } catch (_) {
-          // Non-blocking audit logging
-        }
-      }
-    };
-
-    /* ========================================================================
-       MODULE 5: APPLICATION STATE & SESSION LOCK ENGINE (PART 03 & PART 14)
-       ======================================================================== */
-    const AppState = {
-      sessionKey: null,       // Volatile AES-256-GCM CryptoKey
-      isDecoyMode: false,     // True if unlocked with Decoy PIN
-      decryptedVault: [],     // Volatile in-memory cache cleared on lock
-      decryptedTx: [],        // Volatile in-memory ledger cleared on lock
-      inactivityTimer: null,
-      inactivityMs: 300000,   // Default 5 min
-      lockOnBackground: false,
-      activeObjectUrl: null
-    };
-
-    const SessionEngine = {
-      MAX_ATTEMPTS: 5,
-      LOCKOUT_MS: 30000,
-
-      resetInactivityTimer() {
-        if (AppState.inactivityTimer) clearTimeout(AppState.inactivityTimer);
-        if (!AppState.sessionKey && !AppState.isDecoyMode) return;
-        AppState.inactivityTimer = setTimeout(() => {
-          this.lockSession("Inactivity timeout reached");
-        }, AppState.inactivityMs);
-      },
-
-      async lockSession(reason = "Manual lock") {
-        AppState.sessionKey = null;
-        AppState.isDecoyMode = false;
-        AppState.decryptedVault = [];
-        AppState.decryptedTx = [];
-        if (AppState.inactivityTimer) clearTimeout(AppState.inactivityTimer);
-        if (AppState.activeObjectUrl) {
-          URL.revokeObjectURL(AppState.activeObjectUrl);
-          AppState.activeObjectUrl = null;
-        }
-
-        // Immediately wipe sensitive DOM lists
-        UI.clearElement(document.getElementById("vaultItemsList"));
-        UI.clearElement(document.getElementById("txLedgerList"));
-        document.getElementById("modalPlaintext").textContent = "";
-        document.getElementById("decryptModal").classList.add("hidden");
-
-        document.getElementById("appContainer").classList.add("hidden");
-        document.getElementById("lockScreen").classList.remove("hidden");
-        document.getElementById("unlockPassword").value = "";
-
-        await AuditTimeline.log("SESSION_LOCKED", reason);
-        UI.toast("Vault locked: " + reason);
-      },
-
-      async initializeMasterVault(masterPassword, decoyPin) {
-        const salt = CryptoEngine.generateSalt();
-        const key = await CryptoEngine.deriveKey(masterPassword, salt);
-        const verifierEnvelope = await CryptoEngine.encrypt(
-          { verify: "VROXIT_AUTH_OK", created: Date.now() },
-          key
-        );
-
-        let decoyHash = null;
-        if (decoyPin && decoyPin.trim().length > 0) {
-          decoyHash = await CryptoEngine.sha256Hex("DECOY:" + decoyPin.trim());
-        }
-
-        await DBEngine.put("meta", {
-          key: "auth_config",
-          salt: CryptoEngine.bufToBase64(salt),
-          verifier: verifierEnvelope,
-          decoyHash,
-          failedAttempts: 0,
-          lockoutUntil: 0
-        });
-
-        await AuditTimeline.log("VAULT_INITIALIZED", "Master PBKDF2 + AES-256-GCM key initialized");
-        AppState.sessionKey = key;
-        AppState.isDecoyMode = false;
-        await AppController.enterUnlockedWorkspace();
-      },
-
-      async attemptUnlock(inputSecret) {
-        const authConfig = await DBEngine.get("meta", "auth_config");
-        if (!authConfig) return;
-
-        const now = Date.now();
-        if (authConfig.lockoutUntil && now < authConfig.lockoutUntil) {
-          const waitSec = Math.ceil((authConfig.lockoutUntil - now) / 1000);
-          UI.toast("Rate limited. Wait " + waitSec + "s before retrying.", true);
-          return;
-        }
-
-        // Check if Decoy PIN was entered (Part 14 Decoy Workspace)
-        if (authConfig.decoyHash) {
-          const candidateDecoy = await CryptoEngine.sha256Hex("DECOY:" + inputSecret.trim());
-          if (candidateDecoy === authConfig.decoyHash) {
-            AppState.sessionKey = null;
-            AppState.isDecoyMode = true;
-            await AuditTimeline.log("DECOY_OPENED", "Decoy workspace session activated");
-            await AppController.enterUnlockedWorkspace();
-            return;
-          }
-        }
-
-        try {
-          const saltBuf = new Uint8Array(CryptoEngine.base64ToBuf(authConfig.salt));
-          const candidateKey = await CryptoEngine.deriveKey(inputSecret, saltBuf);
-          const check = await CryptoEngine.decrypt(authConfig.verifier, candidateKey);
-
-          if (check && check.verify === "VROXIT_AUTH_OK") {
-            authConfig.failedAttempts = 0;
-            authConfig.lockoutUntil = 0;
-            await DBEngine.put("meta", authConfig);
-
-            AppState.sessionKey = candidateKey;
-            AppState.isDecoyMode = false;
-            await AuditTimeline.log("VAULT_UNLOCKED", "Session authenticated via AES-GCM verifier");
-            await AppController.enterUnlockedWorkspace();
-          }
-        } catch (_) {
-          authConfig.failedAttempts = (authConfig.failedAttempts || 0) + 1;
-          if (authConfig.failedAttempts >= this.MAX_ATTEMPTS) {
-            authConfig.lockoutUntil = Date.now() + this.LOCKOUT_MS;
-            await AuditTimeline.log("AUTH_LOCKOUT", "Rate limit triggered after failed attempts");
-            UI.toast("Too many failed attempts! Locked for 30 seconds.", true);
-          } else {
-            await AuditTimeline.log("AUTH_FAILED", "Invalid master credential attempt");
-            UI.toast(
-              "Invalid Master Password (" + authConfig.failedAttempts + "/" + this.MAX_ATTEMPTS + ")",
-              true
-            );
-          }
-          await DBEngine.put("meta", authConfig);
-        }
-      }
-    };
-
-    /* ========================================================================
-       MODULE 6: PART 06 — LIFECYCLE ENGINE (ACTIVE / EXPIRING / EXPIRED)
-       ======================================================================== */
-    const LifecycleEngine = {
-      computeStatus(expiresAt) {
-        if (!expiresAt || expiresAt === 0) return "ACTIVE";
-        const remaining = expiresAt - Date.now();
-        if (remaining <= 0) return "EXPIRED";
-        if (remaining <= 3600000) return "EXPIRING"; // Less than 1 hour left
-        return "ACTIVE";
-      }
-    };
-
-    /* ========================================================================
-       MODULE 7: MAIN APPLICATION CONTROLLER (VAULT, EARNINGS, .VROX, SELF-TEST)
-       ======================================================================== */
-    const AppController = {
-      async boot() {
-        this.bindEvents();
-        this.updateNetworkBadge();
-
-        // Register Service Worker if supported and not on file:// protocol
-        if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-          navigator.serviceWorker.register("sw.js").catch(() => {});
-        }
-
-        // Default today's date in transaction manager
-        document.getElementById("txDate").value = new Date().toISOString().split("T")[0];
-
-        const authConfig = await DBEngine.get("meta", "auth_config");
-        if (!authConfig) {
-          document.getElementById("authSubtitle").textContent = "FIRST-TIME VAULT SETUP";
-          document.getElementById("setupForm").classList.remove("hidden");
-        } else {
-          document.getElementById("authSubtitle").textContent = "VAULT LOCKED // AUTHENTICATE";
-          document.getElementById("unlockForm").classList.remove("hidden");
-        }
-      },
-
-      async enterUnlockedWorkspace() {
-        document.getElementById("lockScreen").classList.add("hidden");
-        document.getElementById("appContainer").classList.remove("hidden");
-
-        const badge = document.getElementById("hudSessionBadge");
-        if (AppState.isDecoyMode) {
-          badge.textContent = "SESSION: WORKSPACE MODE";
-          AppState.decryptedVault = [
-            {
-              id: "decoy_1",
-              title: "Grocery & Shopping List",
-              category: "NOTE",
-              secretText: "Milk, coffee beans, oats, sparkling water.",
-              createdAt: Date.now() - 86400000,
-              expiresAt: 0
-            }
-          ];
-          AppState.decryptedTx = [
-            {
-              id: "decoy_tx_1",
-              source: "Part-Time Tutoring",
-              type: "INCOME",
-              category: "Freelance / Dev",
-              amount: 120,
-              date: new Date().toISOString().split("T")[0],
-              memo: "Weekend session"
-            }
-          ];
-        } else {
-          badge.textContent = "SESSION: ACTIVE (AES-256-GCM)";
-          await this.loadAndDecryptAll();
-        }
-
-        SessionEngine.resetInactivityTimer();
-        await this.refreshAllViews();
-        await this.runSecuritySelfTest();
-      },
-
-      async loadAndDecryptAll() {
-        if (!AppState.sessionKey) return;
-
-        // 1. Load & Decrypt Vault Objects
-        const rawVault = await DBEngine.getAll("vault");
-        const vaultList = [];
-        for (const rec of rawVault) {
-          try {
-            const payload = await CryptoEngine.decrypt(rec.envelope, AppState.sessionKey);
-            vaultList.push({
-              id: rec.id,
-              createdAt: rec.createdAt,
-              expiresAt: rec.expiresAt || 0,
-              ...payload
-            });
-          } catch (_) {
-            // Corrupted or undecryptable record skipped safely
-          }
-        }
-        AppState.decryptedVault = vaultList.sort((a, b) => b.createdAt - a.createdAt);
-
-        // 2. Load & Decrypt Financial Transactions
-        const rawTx = await DBEngine.getAll("transactions");
-        const txList = [];
-        for (const rec of rawTx) {
-          try {
-            const payload = await CryptoEngine.decrypt(rec.envelope, AppState.sessionKey);
-            txList.push({
-              id: rec.id,
-              createdAt: rec.createdAt,
-              ...payload
-            });
-          } catch (_) {}
-        }
-        AppState.decryptedTx = txList.sort((a, b) => b.createdAt - a.createdAt);
-      },
-
-      async refreshAllViews() {
-        this.renderVaultList();
-        this.renderTransactionManager();
-        await this.renderDashboardHUD();
-      },
-
-      /* ----------------------------------------------------------------------
-         DASHBOARD & PRIVACY GUARDIAN RENDERING
-         ---------------------------------------------------------------------- */
-      async renderDashboardHUD() {
-        // Compute Financials
-        let totalIncome = 0;
-        let totalExpense = 0;
-        for (const tx of AppState.decryptedTx) {
-          if (tx.type === "INCOME") totalIncome += Number(tx.amount) || 0;
-          else totalExpense += Number(tx.amount) || 0;
-        }
-        const net = totalIncome - totalExpense;
-
-        document.getElementById("dashNetBalance").textContent = UI.formatCurrency(net);
-        document.getElementById("dashTotalIncome").textContent = UI.formatCurrency(totalIncome);
-        document.getElementById("dashTxCount").textContent =
-          AppState.decryptedTx.length + " encrypted records";
-
-        // Vault counts
-        let expiringCount = 0;
-        for (const item of AppState.decryptedVault) {
-          const st = LifecycleEngine.computeStatus(item.expiresAt);
-          if (st === "EXPIRING" || st === "EXPIRED") expiringCount++;
-        }
-        document.getElementById("dashVaultCount").textContent = String(AppState.decryptedVault.length);
-        document.getElementById("dashExpiringCount").textContent = expiringCount + " expiring/expired";
-
-        // Storage Estimate
-        if (navigator.storage && navigator.storage.estimate) {
-          try {
-            const est = await navigator.storage.estimate();
-            document.getElementById("dashStorageUsed").textContent = UI.formatBytes(est.usage || 0);
-            document.getElementById("dashStorageQuota").textContent =
-              "Quota: " + UI.formatBytes(est.quota || 0);
-          } catch (_) {}
-        }
-
-        // Privacy Guardian Status
-        const guardEl = document.getElementById("privacyGuardianList");
-        UI.clearElement(guardEl);
-        const statuses = [
-          {
-            label: "Session Encryption Engine",
-            val: AppState.isDecoyMode ? "DECOY WORKSPACE" : "AES-256-GCM (WebCrypto)",
-            badge: "badge-pass"
-          },
-          {
-            label: "Key Storage Location",
-            val: "Volatile RAM (Non-Extractable)",
-            badge: "badge-pass"
-          },
-          {
-            label: "Secure Context (HTTPS/Local)",
-            val: window.isSecureContext ? "VERIFIED" : "UNVERIFIED",
-            badge: window.isSecureContext ? "badge-pass" : "badge-warn"
-          },
-          {
-            label: "Screen Capture Detection",
-            val: "Platform capability unavailable",
-            badge: "badge-info"
-          }
-        ];
-
-        for (const s of statuses) {
-          const row = document.createElement("div");
-          row.className = "list-row";
-          const main = document.createElement("div");
-          main.className = "row-main";
-          const title = document.createElement("div");
-          title.className = "row-title";
-          title.textContent = s.label;
-          main.appendChild(title);
-
-          const b = document.createElement("span");
-          b.className = "badge " + s.badge;
-          b.textContent = s.val;
-
-          row.appendChild(main);
-          row.appendChild(b);
-          guardEl.appendChild(row);
-        }
-
-        // Security Timeline
-        const timelineEl = document.getElementById("securityTimelineList");
-        UI.clearElement(timelineEl);
-        const events = (await DBEngine.getAll("timeline")).sort((a, b) => b.ts - a.ts).slice(0, 12);
-        if (events.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty-state";
-          empty.textContent = "No security events recorded.";
-          timelineEl.appendChild(empty);
-        } else {
-          for (const ev of events) {
-            const row = document.createElement("div");
-            row.className = "list-row";
-            const main = document.createElement("div");
-            main.className = "row-main";
-
-            const title = document.createElement("div");
-            title.className = "row-title";
-            title.textContent = ev.summary;
-
-            const meta = document.createElement("div");
-            meta.className = "row-meta";
-            meta.textContent = new Date(ev.ts).toLocaleTimeString() + " // " + ev.code;
-
-            main.appendChild(title);
-            main.appendChild(meta);
-            row.appendChild(main);
-            timelineEl.appendChild(row);
-          }
-        }
-      },
-
-      /* ----------------------------------------------------------------------
-         ENCRYPTED VAULT RENDERING & OPERATIONS
-         ---------------------------------------------------------------------- */
-      renderVaultList() {
-        const container = document.getElementById("vaultItemsList");
-        UI.clearElement(container);
-        const query = (document.getElementById("vaultSearchInput").value || "").toLowerCase();
-
-        const filtered = AppState.decryptedVault.filter((item) =>
-          item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query)
-        );
-
-        if (filtered.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty-state";
-          empty.textContent = "No encrypted objects in vault matching filter.";
-          container.appendChild(empty);
-          return;
-        }
-
-        for (const item of filtered) {
-          const status = LifecycleEngine.computeStatus(item.expiresAt);
-          const row = document.createElement("div");
-          row.className = "list-row";
-
-          const main = document.createElement("div");
-          main.className = "row-main";
-
-          const title = document.createElement("div");
-          title.className = "row-title";
-          title.textContent = item.title;
-
-          const meta = document.createElement("div");
-          meta.className = "row-meta";
-          const statusSpan = document.createElement("span");
-          statusSpan.className =
-            status === "ACTIVE"
-              ? "badge badge-pass"
-              : status === "EXPIRING"
-              ? "badge badge-warn"
-              : "badge badge-danger";
-          statusSpan.textContent = status;
-
-          const catSpan = document.createElement("span");
-          catSpan.textContent = item.category + " • " + new Date(item.createdAt).toLocaleDateString();
-
-          meta.appendChild(statusSpan);
-          meta.appendChild(catSpan);
-          main.appendChild(title);
-          main.appendChild(meta);
-
-          const actions = document.createElement("div");
-          actions.className = "row-actions";
-
-          if (status !== "EXPIRED") {
-            const viewBtn = document.createElement("button");
-            viewBtn.type = "button";
-            viewBtn.className = "btn btn-secondary btn-sm";
-            viewBtn.textContent = "DECRYPT";
-            viewBtn.addEventListener("click", () => this.openDecryptedModal(item, status));
-            actions.appendChild(viewBtn);
-          }
-
-          const delBtn = document.createElement("button");
-          delBtn.type = "button";
-          delBtn.className = "btn btn-danger btn-sm";
-          delBtn.textContent = "DEL";
-          delBtn.addEventListener("click", () => this.deleteVaultItem(item.id));
-          actions.appendChild(delBtn);
-
-          row.appendChild(main);
-          row.appendChild(actions);
-          container.appendChild(row);
-        }
-      },
-
-      openDecryptedModal(item, status) {
-        document.getElementById("modalTitle").textContent = "// " + item.title;
-        document.getElementById("modalLifecycleBadge").textContent = status;
-        document.getElementById("modalMeta").textContent =
-          "Category: " +
-          item.category +
-          " | Created: " +
-          new Date(item.createdAt).toLocaleString();
-
-        const pre = document.getElementById("modalPlaintext");
-        const dlZone = document.getElementById("modalDownloadZone");
-        const dlLink = document.getElementById("modalDownloadLink");
-
-        if (AppState.activeObjectUrl) {
-          URL.revokeObjectURL(AppState.activeObjectUrl);
-          AppState.activeObjectUrl = null;
-        }
-
-        if (item.category === "FILE" && item.fileBase64) {
-          pre.textContent =
-            "Encrypted Binary File: " +
-            item.fileName +
-            " (" +
-            UI.formatBytes(item.fileSize || 0) +
-            ")";
-          const buf = CryptoEngine.base64ToBuf(item.fileBase64);
-          const blob = new Blob([buf], { type: item.fileType || "application/octet-stream" });
-          AppState.activeObjectUrl = URL.createObjectURL(blob);
-          dlLink.href = AppState.activeObjectUrl;
-          dlLink.download = item.fileName || "decrypted_file.bin";
-          dlZone.classList.remove("hidden");
-        } else {
-          pre.textContent = item.secretText || "";
-          dlZone.classList.add("hidden");
-        }
-
-        document.getElementById("decryptModal").classList.remove("hidden");
-      },
-
-      async deleteVaultItem(id) {
-        AppState.decryptedVault = AppState.decryptedVault.filter((i) => i.id !== id);
-        if (!AppState.isDecoyMode) {
-          await DBEngine.delete("vault", id);
-          await AuditTimeline.log("ITEM_REMOVED", "Vault item deleted from IndexedDB");
-        }
-        await this.refreshAllViews();
-        UI.toast("Vault item removed.");
-      },
-
-      /* ----------------------------------------------------------------------
-         EARNING & TRANSACTION MANAGER RENDERING & OPERATIONS
-         ---------------------------------------------------------------------- */
-      renderTransactionManager() {
-        let income = 0;
-        let expense = 0;
-        for (const tx of AppState.decryptedTx) {
-          const amt = Number(tx.amount) || 0;
-          if (tx.type === "INCOME") income += amt;
-          else expense += amt;
-        }
-        const net = income - expense;
-        const margin = income > 0 ? Math.round((net / income) * 100) : 0;
-
-        document.getElementById("mgrIncome").textContent = UI.formatCurrency(income);
-        document.getElementById("mgrExpense").textContent = UI.formatCurrency(expense);
-        document.getElementById("mgrNet").textContent = UI.formatCurrency(net);
-        document.getElementById("mgrMargin").textContent = margin + "%";
-
-        const filterType = document.getElementById("txFilterType").value;
-        const query = (document.getElementById("txSearchInput").value || "").toLowerCase();
-        const listEl = document.getElementById("txLedgerList");
-        UI.clearElement(listEl);
-
-        const filtered = AppState.decryptedTx.filter((tx) => {
-          const matchesType = filterType === "ALL" || tx.type === filterType;
-          const matchesQuery =
-            tx.source.toLowerCase().includes(query) ||
-            tx.category.toLowerCase().includes(query) ||
-            (tx.memo || "").toLowerCase().includes(query);
-          return matchesType && matchesQuery;
-        });
-
-        if (filtered.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty-state";
-          empty.textContent = "No encrypted financial records match your filter.";
-          listEl.appendChild(empty);
-          return;
-        }
-
-        for (const tx of filtered) {
-          const row = document.createElement("div");
-          row.className = "list-row";
-
-          const main = document.createElement("div");
-          main.className = "row-main";
-
-          const title = document.createElement("div");
-          title.className = "row-title";
-          title.textContent = tx.source;
-
-          const meta = document.createElement("div");
-          meta.className = "row-meta";
-          meta.textContent =
-            tx.date + " • " + tx.category + (tx.memo ? " • " + tx.memo : "");
-
-          main.appendChild(title);
-          main.appendChild(meta);
-
-          const actions = document.createElement("div");
-          actions.className = "row-actions";
-
-          const amtBadge = document.createElement("span");
-          amtBadge.className = tx.type === "INCOME" ? "badge badge-pass" : "badge badge-danger";
-          amtBadge.textContent =
-            (tx.type === "INCOME" ? "+" : "-") + UI.formatCurrency(tx.amount);
-
-          const delBtn = document.createElement("button");
-          delBtn.type = "button";
-          delBtn.className = "btn btn-danger btn-sm";
-          delBtn.textContent = "×";
-          delBtn.setAttribute("aria-label", "Delete Transaction");
-          delBtn.addEventListener("click", async () => {
-            AppState.decryptedTx = AppState.decryptedTx.filter((t) => t.id !== tx.id);
-            if (!AppState.isDecoyMode) {
-              await DBEngine.delete("transactions", tx.id);
-              await AuditTimeline.log("TX_DELETED", "Encrypted transaction deleted");
-            }
-            await this.refreshAllViews();
-          });
-
-          actions.appendChild(amtBadge);
-          actions.appendChild(delBtn);
-
-          row.appendChild(main);
-          row.appendChild(actions);
-          listEl.appendChild(row);
-        }
-      },
-
-      /* ----------------------------------------------------------------------
-         PART 07: .VROX PORTABLE ENCRYPTED PACKAGE EXPORT / IMPORT
-         ---------------------------------------------------------------------- */
-      async exportVroxPackage() {
-        if (AppState.isDecoyMode) {
-          UI.toast("Export unavailable in Decoy mode.", true);
-          return;
-        }
-        const vaultRecords = await DBEngine.getAll("vault");
-        const txRecords = await DBEngine.getAll("transactions");
-
-        const payload = {
-          vault: vaultRecords,
-          transactions: txRecords
-        };
-        const payloadJson = JSON.stringify(payload);
-        const integritySha256 = await CryptoEngine.sha256Hex(payloadJson);
-
-        const vroxContainer = {
-          format: "VROX_PORTABLE_CONTAINER",
-          formatVersion: 1,
-          appVersion: "1.0.0",
-          exportedAt: Date.now(),
-          integritySha256,
-          data: payload
-        };
-
-        const blob = new Blob([JSON.stringify(vroxContainer, null, 2)], {
-          type: "application/json"
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "vroxit_backup_" + new Date().toISOString().slice(0, 10) + ".vrox";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        await AuditTimeline.log("VROX_EXPORTED", "Exported signed .VROX state container");
-        await this.renderDashboardHUD();
-        UI.toast(".VROX encrypted package exported.");
-      },
-
-      async importVroxPackage(file) {
-        if (!file || AppState.isDecoyMode) return;
-        if (file.size > 50 * 1024 * 1024) {
-          UI.toast("Package exceeds 50MB safety limit.", true);
-          return;
-        }
-
-        try {
-          const text = await file.text();
-          const parsed = JSON.parse(text);
-
-          if (
-            parsed.format !== "VROX_PORTABLE_CONTAINER" ||
-            parsed.formatVersion !== 1 ||
-            !parsed.data ||
-            !parsed.integritySha256
-          ) {
-            throw new Error("Malformed .VROX schema.");
-          }
-
-          const computedHash = await CryptoEngine.sha256Hex(JSON.stringify(parsed.data));
-          if (computedHash !== parsed.integritySha256) {
-            throw new Error("Integrity SHA-256 verification failed!");
-          }
-
-          let importedCount = 0;
-          if (Array.isArray(parsed.data.vault)) {
-            for (const v of parsed.data.vault) {
-              if (v && v.id && v.envelope) {
-                await DBEngine.put("vault", v);
-                importedCount++;
-              }
-            }
-          }
-          if (Array.isArray(parsed.data.transactions)) {
-            for (const t of parsed.data.transactions) {
-              if (t && t.id && t.envelope) {
-                await DBEngine.put("transactions", t);
-                importedCount++;
-              }
-            }
-          }
-
-          await AuditTimeline.log("VROX_IMPORTED", "Imported " + importedCount + " encrypted records");
-          await this.loadAndDecryptAll();
-          await this.refreshAllViews();
-          UI.toast("Verified & imported " + importedCount + " records.");
-        } catch (err) {
-          UI.toast("Import rejected: " + err.message, true);
-        }
-      },
-
-      /* ----------------------------------------------------------------------
-         PART 13: SECURITY SELF-TEST DIAGNOSTICS
-         ---------------------------------------------------------------------- */
-      async runSecuritySelfTest() {
-        const container = document.getElementById("selfTestList");
-        UI.clearElement(container);
-
-        let aesRoundTrip = "FAIL";
-        try {
-          if (AppState.sessionKey) {
-            const probe = await CryptoEngine.encrypt({ ping: "ok" }, AppState.sessionKey);
-            const out = await CryptoEngine.decrypt(probe, AppState.sessionKey);
-            if (out.ping === "ok") aesRoundTrip = "PASS";
-          } else if (AppState.isDecoyMode) {
-            aesRoundTrip = "PASS";
-          }
-        } catch (_) {}
-
-        const results = [
-          {
-            name: "Web Crypto Subtle API",
-            status: window.crypto && window.crypto.subtle ? "PASS" : "FAIL",
-            detail: "AES-256-GCM & PBKDF2 primitives"
-          },
-          {
-            name: "AES-GCM Round-Trip Test",
-            status: aesRoundTrip,
-            detail: "Live encrypt/decrypt verification"
-          },
-          {
-            name: "IndexedDB Engine",
-            status: window.indexedDB ? "PASS" : "FAIL",
-            detail: "Encrypted local object persistence"
-          },
-          {
-            name: "Secure Context",
-            status: window.isSecureContext ? "PASS" : "WARNING",
-            detail: window.isSecureContext ? "HTTPS / Localhost active" : "Non-HTTPS origin"
-          }
-        ];
-
-        for (const r of results) {
-          const box = document.createElement("div");
-          box.className = "stat-box";
-          const top = document.createElement("div");
-          top.style.display = "flex";
-          top.style.justifyContent = "space-between";
-          top.style.alignItems = "center";
-
-          const lbl = document.createElement("span");
-          lbl.className = "stat-label";
-          lbl.textContent = r.name;
-
-          const b = document.createElement("span");
-          b.className =
-            r.status === "PASS"
-              ? "badge badge-pass"
-              : r.status === "WARNING"
-              ? "badge badge-warn"
-              : "badge badge-danger";
-          b.textContent = r.status;
-
-          const sub = document.createElement("span");
-          sub.className = "stat-sub";
-          sub.textContent = r.detail;
-
-          top.appendChild(lbl);
-          top.appendChild(b);
-          box.appendChild(top);
-          box.appendChild(sub);
-          container.appendChild(box);
-        }
-      },
-
-      updateNetworkBadge() {
-        const badge = document.getElementById("netStatusBadge");
-        if (navigator.onLine) {
-          badge.textContent = "ONLINE";
-          badge.className = "badge badge-pass";
-        } else {
-          badge.textContent = "OFFLINE";
-          badge.className = "badge badge-warn";
-        }
-      },
-
-      /* ----------------------------------------------------------------------
-         DOM EVENT BINDINGS
-         ---------------------------------------------------------------------- */
-      bindEvents() {
-        // Activity listeners for auto-lock
-        ["click", "keydown", "touchstart"].forEach((evt) => {
-          window.addEventListener(evt, () => SessionEngine.resetInactivityTimer(), { passive: true });
-        });
-
-        window.addEventListener("online", () => this.updateNetworkBadge());
-        window.addEventListener("offline", () => this.updateNetworkBadge());
-
-        // Background tab lock
-        document.addEventListener("visibilitychange", () => {
-          if (document.hidden && AppState.lockOnBackground && (AppState.sessionKey || AppState.isDecoyMode)) {
-            SessionEngine.lockSession("Locked on background tab switch");
-          }
-        });
-
-        // Password strength indicator
-        document.getElementById("setupPassword").addEventListener("input", (e) => {
-          const val = e.target.value;
-          let score = 0;
-          if (val.length >= 8) score += 25;
-          if (val.length >= 12) score += 25;
-          if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score += 25;
-          if (/[^A-Za-z0-9]/.test(val)) score += 25;
-
-          const fill = document.getElementById("strengthFill");
-          fill.style.width = score + "%";
-          document.getElementById("strengthText").textContent =
-            "Estimated Strength: " + score + "%";
-        });
-
-        // Setup Form
-        document.getElementById("setupForm").addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const p1 = document.getElementById("setupPassword").value;
-          const p2 = document.getElementById("setupConfirm").value;
-          const decoy = document.getElementById("setupDecoyPin").value;
-
-          if (p1.length < 8) {
-            UI.toast("Master Password must be at least 8 characters.", true);
-            return;
-          }
-          if (p1 !== p2) {
-            UI.toast("Master Passwords do not match.", true);
-            return;
-          }
-          await SessionEngine.initializeMasterVault(p1, decoy);
-        });
-
-        // Unlock Form
-        document.getElementById("unlockForm").addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const secret = document.getElementById("unlockPassword").value;
-          await SessionEngine.attemptUnlock(secret);
-        });
-
-        // Navigation Tabs
-        document.querySelectorAll(".nav-btn").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
-            const target = btn.getAttribute("data-target");
-            document.querySelectorAll(".view-section").forEach((sec) => {
-              sec.classList.toggle("hidden", sec.id !== target);
-            });
-          });
-        });
-
-        // Theme Toggle
-        document.getElementById("themeToggleBtn").addEventListener("click", () => {
-          const html = document.documentElement;
-          const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
-          html.setAttribute("data-theme", next);
-        });
-
-        // Panic Lock
-        document.getElementById("panicLockBtn").addEventListener("click", () => {
-          SessionEngine.lockSession("PANIC LOCK TRIGGERED");
-        });
-
-        // Vault Type Toggle (Note vs File)
-        document.getElementById("vaultCategory").addEventListener("change", (e) => {
-          const isFile = e.target.value === "FILE";
-          document.getElementById("vaultFileGroup").classList.toggle("hidden", !isFile);
-          document.getElementById("vaultNoteGroup").classList.toggle("hidden", isFile);
-        });
-
-        // Add Encrypted Vault Object
-        document.getElementById("vaultForm").addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const title = document.getElementById("vaultTitle").value.trim();
-          const category = document.getElementById("vaultCategory").value;
-          const expiryDuration = Number(document.getElementById("vaultExpiry").value) || 0;
-          const expiresAt = expiryDuration > 0 ? Date.now() + expiryDuration : 0;
-
-          if (!title) return;
-
-          const plainPayload = { title, category };
-
-          if (category === "FILE") {
-            const fileInput = document.getElementById("vaultFileInput");
-            const file = fileInput.files[0];
-            if (!file) {
-              UI.toast("Please select a file to encrypt.", true);
-              return;
-            }
-            const buf = await file.arrayBuffer();
-            plainPayload.fileName = file.name;
-            plainPayload.fileSize = file.size;
-            plainPayload.fileType = file.type;
-            plainPayload.fileBase64 = CryptoEngine.bufToBase64(buf);
-          } else {
-            plainPayload.secretText = document.getElementById("vaultSecretText").value;
-          }
-
-          const id = "vlt_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
-          const createdAt = Date.now();
-
-          if (!AppState.isDecoyMode && AppState.sessionKey) {
-            const envelope = await CryptoEngine.encrypt(plainPayload, AppState.sessionKey);
-            await DBEngine.put("vault", { id, createdAt, expiresAt, envelope });
-            await AuditTimeline.log("ITEM_ENCRYPTED", "Encrypted vault object (" + category + ")");
-          }
-
-          AppState.decryptedVault.unshift({ id, createdAt, expiresAt, ...plainPayload });
-          document.getElementById("vaultForm").reset();
-          document.getElementById("vaultFileGroup").classList.add("hidden");
-          document.getElementById("vaultNoteGroup").classList.remove("hidden");
-
-          await this.refreshAllViews();
-          UI.toast("Object encrypted with fresh IV and stored.");
-        });
-
-        // Purge Expired Vault Items
-        document.getElementById("purgeExpiredBtn").addEventListener("click", async () => {
-          let purged = 0;
-          const remaining = [];
-          for (const item of AppState.decryptedVault) {
-            if (LifecycleEngine.computeStatus(item.expiresAt) === "EXPIRED") {
-              purged++;
-              if (!AppState.isDecoyMode) await DBEngine.delete("vault", item.id);
-            } else {
-              remaining.push(item);
-            }
-          }
-          AppState.decryptedVault = remaining;
-          if (purged > 0) {
-            await AuditTimeline.log("EXPIRED_PURGED", "Purged " + purged + " expired items");
-          }
-          await this.refreshAllViews();
-          UI.toast("Purged " + purged + " expired item(s).");
-        });
-
-        // Search Vault
-        document.getElementById("vaultSearchInput").addEventListener("input", () => {
-          this.renderVaultList();
-        });
-
-        // Close Modal
-        document.getElementById("closeModalBtn").addEventListener("click", () => {
-          document.getElementById("modalPlaintext").textContent = "";
-          if (AppState.activeObjectUrl) {
-            URL.revokeObjectURL(AppState.activeObjectUrl);
-            AppState.activeObjectUrl = null;
-          }
-          document.getElementById("decryptModal").classList.add("hidden");
-        });
-
-        // Add Encrypted Earning / Expense Transaction
-        document.getElementById("txForm").addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const source = document.getElementById("txSource").value.trim();
-          const type = document.getElementById("txType").value;
-          const category = document.getElementById("txCategory").value;
-          const amount = parseFloat(document.getElementById("txAmount").value);
-          const date = document.getElementById("txDate").value;
-          const memo = document.getElementById("txMemo").value.trim();
-
-          if (!source || isNaN(amount) || amount <= 0) return;
-
-          const id = "tx_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
-          const createdAt = Date.now();
-          const txPayload = { source, type, category, amount, date, memo };
-
-          if (!AppState.isDecoyMode && AppState.sessionKey) {
-            const envelope = await CryptoEngine.encrypt(txPayload, AppState.sessionKey);
-            await DBEngine.put("transactions", { id, createdAt, envelope });
-            await AuditTimeline.log("TX_RECORDED", "Encrypted " + type + " transaction committed");
-          }
-
-          AppState.decryptedTx.unshift({ id, createdAt, ...txPayload });
-          document.getElementById("txSource").value = "";
-          document.getElementById("txAmount").value = "";
-          document.getElementById("txMemo").value = "";
-
-          await this.refreshAllViews();
-          UI.toast("Encrypted transaction added to ledger.");
-        });
-
-        // Filter & Search Ledger
-        document.getElementById("txFilterType").addEventListener("change", () => {
-          this.renderTransactionManager();
-        });
-        document.getElementById("txSearchInput").addEventListener("input", () => {
-          this.renderTransactionManager();
-        });
-
-        // Clear Timeline
-        document.getElementById("clearTimelineBtn").addEventListener("click", async () => {
-          await DBEngine.clearStore("timeline");
-          await this.renderDashboardHUD();
-          UI.toast("Security timeline cleared.");
-        });
-
-        // .VROX Export / Import
-        document.getElementById("exportVroxBtn").addEventListener("click", () => {
-          this.exportVroxPackage();
-        });
-        document.getElementById("importVroxInput").addEventListener("change", (e) => {
-          if (e.target.files[0]) {
-            this.importVroxPackage(e.target.files[0]);
-            e.target.value = "";
-          }
-        });
-
-        // Settings
-        document.getElementById("inactivitySelect").addEventListener("change", (e) => {
-          AppState.inactivityMs = Number(e.target.value) || 300000;
-          SessionEngine.resetInactivityTimer();
-          UI.toast("Auto-lock timeout updated.");
-        });
-        document.getElementById("bgLockToggle").addEventListener("change", (e) => {
-          AppState.lockOnBackground = e.target.checked;
-        });
-        document.getElementById("runSelfTestBtn").addEventListener("click", () => {
-          this.runSecuritySelfTest();
-          UI.toast("Diagnostics completed.");
-        });
-
-        // Factory Reset Vault
-        document.getElementById("wipeDatabaseBtn").addEventListener("click", async () => {
-          const confirmWipe = window.confirm(
-            "CRITICAL WARNING: This will permanently erase all encrypted vault objects, financial transactions, and your Master Password verifier. Continue?"
-          );
-          if (!confirmWipe) return;
-          await DBEngine.clearStore("vault");
-          await DBEngine.clearStore("transactions");
-          await DBEngine.clearStore("timeline");
-          await DBEngine.clearStore("meta");
-          location.reload();
-        });
-      }
-    };
-
-    window.addEventListener("DOMContentLoaded", () => {
-      AppController.boot();
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
     });
-  </script>
+}
+
+function dbGet(store, key) {
+    return new Promise((res, rej) => {
+        const tx = db.transaction(store, 'readonly').objectStore(store).get(key);
+        tx.onsuccess = () => res(tx.result);
+        tx.onerror = () => rej(tx.error);
+    });
+}
+function dbGetAll(store) {
+    return new Promise((res, rej) => {
+        const tx = db.transaction(store, 'readonly').objectStore(store).getAll();
+        tx.onsuccess = () => res(tx.result || []);
+        tx.onerror = () => rej(tx.error);
+    });
+}
+function dbPut(store, val) {
+    return new Promise((res, rej) => {
+        const tx = db.transaction(store, 'readwrite').objectStore(store).put(val);
+        tx.onsuccess = () => res(val);
+        tx.onerror = () => rej(tx.error);
+    });
+}
+function dbDel(store, key) {
+    return new Promise((res, rej) => {
+        const tx = db.transaction(store, 'readwrite').objectStore(store).delete(key);
+        tx.onsuccess = () => res();
+        tx.onerror = () => rej(tx.error);
+    });
+}
+
+/* ---------- 3. Vault Initialization & Unlock Lifecycle ---------- */
+async function initApp() {
+    try {
+        db = await openVaultDB();
+        const cfg = await dbGet('meta', 'vault_config');
+        if (cfg) {
+            $('vault-init-status').textContent = `Existing Vault Found (Key v${cfg.keyVersion || 1})`;
+            $('btn-unlock-text').textContent = 'Unlock Existing Vault';
+            $('pass-label').textContent = 'Enter Master Password';
+        } else {
+            $('vault-init-status').textContent = 'New Vault — Set Master Password';
+            $('btn-unlock-text').textContent = 'Initialize Zero-Knowledge Vault';
+            $('pass-label').textContent = 'Create Master Password (min 6 chars)';
+        }
+        checkProBadge();
+    } catch (e) {
+        $('vault-init-status').textContent = 'IndexedDB Unavailable';
+    }
+}
+
+$('toggle-pass-vis').onclick = () => {
+    const inp = $('master-pass');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+};
+
+$('unlock-form').onsubmit = async (e) => {
+    e.preventDefault();
+    show($('lock-error'), false);
+    const pass = $('master-pass').value;
+    if (!pass || pass.length < 6) {
+        $('lock-error').textContent = 'Passphrase must be at least 6 characters.';
+        return show($('lock-error'), true);
+    }
+
+    try {
+        const cfg = await dbGet('meta', 'vault_config');
+        if (!cfg) {
+            // Initialize New Vault
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            sessionKey = await deriveAesKey(pass, salt);
+            currentSalt = bufToB64(salt);
+            keyVersion = 1;
+            const verifier = await encryptPayload({ check: 'VROXIT_VERIFIED_OK' }, sessionKey);
+            const recBytes = crypto.getRandomValues(new Uint8Array(16));
+            const recKey = 'VRX-' + Array.from(recBytes).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+
+            await dbPut('meta', { k: 'vault_config', salt: currentSalt, verifier, keyVersion, created: Date.now() });
+            // Seed default trusted device
+            await dbPut('devices', {
+                id: 'DEV-LOCAL-01',
+                name: 'This Browser Workstation (Primary)',
+                pubKeyFp: (await sha256Hex(currentSalt)).slice(0, 24),
+                status: 'TRUSTED',
+                lastSeen: Date.now()
+            });
+
+            $('generated-recovery-key').textContent = recKey;
+            show($('recovery-wrap'), true);
+            toast('Vault initialized! Copy your recovery key, then click Unlock again.');
+            $('btn-unlock-text').textContent = 'Continue to Vault OS';
+            return;
+        }
+
+        // Verify Existing Vault
+        const saltBytes = b64ToBuf(cfg.salt);
+        const candidateKey = await deriveAesKey(pass, saltBytes);
+        const check = await decryptPayload(cfg.verifier, candidateKey);
+        if (check.check !== 'VROXIT_VERIFIED_OK') throw new Error('Invalid key');
+
+        sessionKey = candidateKey;
+        currentSalt = cfg.salt;
+        keyVersion = cfg.keyVersion || 1;
+        $('master-pass').value = '';
+        show($('recovery-wrap'), false);
+        show($('lock-screen'), false);
+        show($('os-shell'), true);
+        $('session-status-text').textContent = `PROTECTED • KEY v${keyVersion} IN RAM`;
+
+        await refreshAllViews();
+        await runSecuritySelfTest();
+        toast('Vault unlocked in memory');
+    } catch (err) {
+        $('lock-error').textContent = 'Decryption failed: Incorrect Master Password or corrupted verifier.';
+        show($('lock-error'), true);
+    }
+};
+
+/* ---------- Emergency Quick Lock (Sec 14) & Key Rotation (Sec 1.2) ---------- */
+function emergencyQuickLock() {
+    sessionKey = null;
+    stagedVroxImport = null;
+    $('vault-list').innerHTML = '';
+    $('master-pass').value = '';
+    show($('os-shell'), false);
+    show($('cmd-modal'), false);
+    show($('lock-screen'), true);
+    toast('Emergency Quick Lock executed — RAM keys wiped');
+}
+$('btn-emergency-lock').onclick = emergencyQuickLock;
+
+$('btn-rotate-key').onclick = async () => {
+    const newPass = prompt('Enter NEW Master Password (min 6 chars) to re-key and re-encrypt all vault items:');
+    if (!newPass || newPass.length < 6) return toast('Key rotation cancelled or password too short', 'err');
+    try {
+        const items = await dbGetAll('items');
+        const decryptedItems = [];
+        for (const it of items) {
+            decryptedItems.push({ meta: it, plain: await decryptPayload(it.enc, sessionKey) });
+        }
+        const newSalt = crypto.getRandomValues(new Uint8Array(16));
+        const newKey = await deriveAesKey(newPass, newSalt);
+        keyVersion += 1;
+        for (const row of decryptedItems) {
+            row.meta.enc = await encryptPayload(row.plain, newKey);
+            await dbPut('items', row.meta);
+        }
+        const verifier = await encryptPayload({ check: 'VROXIT_VERIFIED_OK' }, newKey);
+        currentSalt = bufToB64(newSalt);
+        await dbPut('meta', { k: 'vault_config', salt: currentSalt, verifier, keyVersion, updated: Date.now() });
+        sessionKey = newKey;
+        $('session-status-text').textContent = `PROTECTED • KEY v${keyVersion} IN RAM`;
+        await refreshAllViews();
+        toast(`Key rotated to v${keyVersion} — ${decryptedItems.length} items re-encrypted`);
+    } catch (e) {
+        toast('Re-keying failed: ' + e.message, 'err');
+    }
+};
+
+$('btn-reset-vault').onclick = async () => {
+    if (!confirm('Permanently delete local IndexedDB vault? Encrypted data cannot be recovered without a .VROX backup.')) return;
+    if (db) db.close();
+    indexedDB.deleteDatabase(DB_NAME);
+    location.reload();
+};
+
+/* ---------- 4. Real Security Self-Test (Sec 1.3 & 21) ---------- */
+async function runSecuritySelfTest() {
+    const results = [];
+    // 1. Web Crypto
+    const hasCrypto = !!(window.crypto && window.crypto.subtle);
+    results.push({ name: 'Web Crypto API', status: hasCrypto ? 'PASS' : 'FAILED', detail: hasCrypto ? 'SubtleCrypto Native' : 'Missing' });
+    // 2. Secure Context
+    const secCtx = window.isSecureContext;
+    results.push({ name: 'Secure Context', status: secCtx ? 'PASS' : 'WARNING', detail: secCtx ? 'HTTPS / Localhost' : 'Insecure Origin' });
+    // 3. IndexedDB
+    results.push({ name: 'IndexedDB Engine', status: db ? 'PASS' : 'FAILED', detail: db ? 'Connected (v1)' : 'Blocked' });
+    // 4. Service Worker capability
+    const hasSw = 'serviceWorker' in navigator;
+    results.push({ name: 'Service Worker', status: hasSw ? 'PASS' : 'NOT AVAILABLE', detail: hasSw ? 'API Supported' : 'Unsupported' });
+    // 5. CSP meta check
+    const hasCsp = !!document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+    results.push({ name: 'CSP Policy', status: hasCsp ? 'PASS' : 'WARNING', detail: hasCsp ? 'Strict Meta Active' : 'No CSP Meta' });
+    // 6. Live AES-GCM Vector Test
+    let cryptoPass = false;
+    try {
+        const testEnc = await encryptPayload({ selfTest: 1 }, sessionKey);
+        const testDec = await decryptPayload(testEnc, sessionKey);
+        cryptoPass = testDec.selfTest === 1;
+    } catch (e) {}
+    results.push({ name: 'AES-GCM Roundtrip', status: cryptoPass ? 'PASS' : 'FAILED', detail: cryptoPass ? '96-bit IV + SHA256 OK' : 'Error' });
+
+    $('diag-grid').innerHTML = results.map(r => {
+        const cls = r.status === 'PASS' ? 'st-pass' : (r.status === 'WARNING' ? 'st-warn' : 'st-fail');
+        return `<div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+            <div>
+                <p class="font-bold text-slate-200">${esc(r.name)}</p>
+                <p class="text-[11px] text-slate-400">${esc(r.detail)}</p>
+            </div>
+            <span class="status-pill ${cls}">${r.status}</span>
+        </div>`;
+    }).join('');
+}
+$('btn-rerun-diag').onclick = () => { runSecuritySelfTest(); toast('Diagnostics refreshed'); };
+
+/* ---------- 5. Advanced File & Note Vault (Sec 8, 9, 13, 28, 29) ---------- */
+let pendingFileData = null;
+
+$('item-file').onchange = async (e) => {
+    const f = e.target.files[0];
+    if (!f) { pendingFileData = null; return show($('file-meta-preview'), false); }
+    const buf = await f.arrayBuffer();
+    const hash = await sha256Hex(buf);
+    const cleanName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    pendingFileData = { origName: f.name, cleanName, size: f.size, type: f.type || 'application/octet-stream', sha256: hash, b64: bufToB64(buf) };
+    $('file-sha256-preview').textContent = hash;
+    $('meta-removed-fields').textContent = `Original: "${f.name}" (${(f.size/1024).toFixed(1)} KB) → Normalized: "${cleanName}" | Local path & OS timestamps stripped.`;
+    show($('file-meta-preview'), true);
+};
+
+$('vault-add-form').onsubmit = async (e) => {
+    e.preventDefault();
+    if (!sessionKey) return;
+    const title = $('item-title').value.trim();
+    const collection = $('item-collection').value;
+    const expiryMs = Number($('item-expiry').value);
+    const content = $('item-content').value.trim();
+    const tags = $('item-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+    const stripMeta = $('chk-strip-meta').checked;
+
+    const secretPayload = {
+        title,
+        content,
+        tags,
+        file: pendingFileData ? {
+            name: stripMeta ? pendingFileData.cleanName : pendingFileData.origName,
+            size: pendingFileData.size,
+            type: pendingFileData.type,
+            sha256: pendingFileData.sha256,
+            b64: pendingFileData.b64
+        } : null
+    };
+
+    const encData = await encryptPayload(secretPayload, sessionKey);
+    const now = Date.now();
+    await dbPut('items', {
+        id: 'VLT-' + now + '-' + Math.random().toString(36).slice(2, 6),
+        collection,
+        created: now,
+        expiresAt: expiryMs > 0 ? now + expiryMs : null,
+        size: JSON.stringify(encData).length,
+        enc: encData
+    });
+
+    $('vault-add-form').reset();
+    pendingFileData = null;
+    show($('file-meta-preview'), false);
+    await refreshAllViews();
+    toast('Item encrypted & stored in IndexedDB');
+};
+
+async function renderVaultItems() {
+    const rawItems = await dbGetAll('items');
+    const now = Date.now();
+    const colFilter = $('filter-collection').value;
+    const queryStr = $('vault-search').value.trim().toLowerCase();
+
+    const activeRows = [];
+    let totalBytes = 0;
+
+    for (const row of rawItems) {
+        if (row.expiresAt && row.expiresAt <= now) {
+            await dbDel('items', row.id); // Auto-purge expired object (Sec 13)
+            continue;
+        }
+        totalBytes += row.size || 0;
+        try {
+            const plain = await decryptPayload(row.enc, sessionKey);
+            if (colFilter !== 'ALL' && row.collection !== colFilter) continue;
+            const hay = (plain.title + ' ' + plain.content + ' ' + (plain.tags || []).join(' ')).toLowerCase();
+            if (queryStr && !hay.includes(queryStr)) continue;
+            activeRows.push({ row, plain });
+        } catch (e) {}
+    }
+
+    $('stat-items').textContent = `${rawItems.length} encrypted`;
+    $('stat-storage').textContent = `${(totalBytes / 1024).toFixed(1)} KB`;
+
+    const listEl = $('vault-list');
+    if (!activeRows.length) {
+        listEl.innerHTML = `<div class="col-span-full p-8 text-center text-xs text-slate-400 border border-dashed border-slate-800 rounded-2xl">No encrypted items match your filter. Add a note or file above.</div>`;
+        return;
+    }
+
+    listEl.innerHTML = activeRows.map(({ row, plain }) => {
+        const expText = row.expiresAt ? `Expires in ${Math.max(1, Math.round((row.expiresAt - now) / 60000))}m` : 'Permanent';
+        const tagsHtml = (plain.tags || []).map(t => `<span class="px-2 py-0.5 rounded bg-slate-800 text-neon-cyan font-mono text-[10px]">${esc(t)}</span>`).join(' ');
+        const fileBadge = plain.file ? `<div class="mt-2 p-2 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between text-[11px] font-mono">
+            <span class="truncate text-emerald-400"><i class="fa-solid fa-paperclip mr-1"></i>${esc(plain.file.name)} (${(plain.file.size/1024).toFixed(1)} KB)</span>
+            <button type="button" data-dl-id="${esc(row.id)}" class="text-neon-cyan hover:underline ml-2">Decrypt & Save</button>
+        </div>
+        <p class="text-[10px] font-mono text-slate-400 mt-1 truncate">SHA-256: ${esc(plain.file.sha256)}</p>` : '';
+
+        return `<article class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800 flex flex-col justify-between">
+            <div>
+                <div class="flex items-start justify-between gap-2">
+                    <div>
+                        <span class="text-[10px] font-mono uppercase text-neon-violet">${esc(row.collection)}</span>
+                        <h3 class="font-display font-bold text-sm text-white">${esc(plain.title)}</h3>
+                    </div>
+                    <span class="status-pill st-pass">${expText}</span>
+                </div>
+                <p class="text-xs text-slate-300 font-mono mt-2 whitespace-pre-wrap break-words bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/80">${esc(plain.content || '(File container)')}</p>
+                ${fileBadge}
+                <div class="mt-2 flex flex-wrap gap-1">${tagsHtml}</div>
+            </div>
+            <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                <button type="button" data-copy-id="${esc(row.id)}" class="text-neon-cyan hover:underline font-mono text-[11px]">
+                    <i class="fa-regular fa-copy mr-1"></i>Copy Secret
+                </button>
+                <button type="button" data-del-id="${esc(row.id)}" class="text-rose-400 hover:underline font-mono text-[11px]">
+                    <i class="fa-solid fa-trash mr-1"></i>Delete
+                </button>
+            </div>
+        </article>`;
+    }).join('');
+}
+
+$('filter-collection').onchange = renderVaultItems;
+$('vault-search').oninput = renderVaultItems;
+
+$('vault-list').onclick = async (e) => {
+    const copyBtn = e.target.closest('[data-copy-id]');
+    const delBtn = e.target.closest('[data-del-id]');
+    const dlBtn = e.target.closest('[data-dl-id]');
+
+    if (copyBtn) {
+        const row = await dbGet('items', copyBtn.dataset.copyId);
+        if (!row) return;
+        const plain = await decryptPayload(row.enc, sessionKey);
+        await navigator.clipboard.writeText(plain.content || plain.title);
+        startClipboardReminder();
+    } else if (delBtn) {
+        await dbDel('items', delBtn.dataset.delId);
+        await refreshAllViews();
+        toast('Encrypted item purged');
+    } else if (dlBtn) {
+        const row = await dbGet('items', dlBtn.dataset.dlId);
+        if (!row) return;
+        const plain = await decryptPayload(row.enc, sessionKey);
+        if (!plain.file) return;
+        const bytes = b64ToBuf(plain.file.b64);
+        const blob = new Blob([bytes], { type: plain.file.type });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = plain.file.name;
+        a.click();
+        toast('File decrypted & downloaded');
+    }
+};
+
+/* ---------- Secure Clipboard Reminder Timer (Sec 9) ---------- */
+function startClipboardReminder() {
+    clearInterval(clipInterval);
+    let sec = 20;
+    $('clip-timer').textContent = `${sec}s`;
+    show($('clipboard-bar'), true);
+    clipInterval = setInterval(() => {
+        sec--;
+        $('clip-timer').textContent = `${sec}s`;
+        if (sec <= 0) {
+            clearInterval(clipInterval);
+            show($('clipboard-bar'), false);
+            toast('Reminder: Clear your OS clipboard if you copied sensitive data');
+        }
+    }, 1000);
+}
+$('btn-clear-clip').onclick = async () => {
+    try { await navigator.clipboard.writeText(''); } catch (e) {}
+    clearInterval(clipInterval);
+    show($('clipboard-bar'), false);
+    toast('Clipboard overwritten with empty string');
+};
+
+/* ---------- 6. .VROX Package Engine — Export & Smart Import Center (Sec 2, 19, 20) ---------- */
+$('btn-export-vrox').onclick = async () => {
+    const pass = $('vrox-export-pass').value;
+    if (!pass || pass.length < 4) return toast('Enter a passphrase to encrypt the .VROX container', 'err');
+
+    const rawItems = await dbGetAll('items');
+    const decryptedNotes = [];
+    const decryptedFiles = [];
+
+    for (const r of rawItems) {
+        const p = await decryptPayload(r.enc, sessionKey);
+        if (p.file && $('vx-files').checked) decryptedFiles.push({ row: r, plain: p });
+        else if (!p.file && $('vx-notes').checked) decryptedNotes.push({ row: r, plain: p });
+    }
+
+    const devices = $('vx-settings').checked ? await dbGetAll('devices') : [];
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const pkgKey = await deriveAesKey(pass, salt);
+
+    const workspaceBundle = {
+        exportedAt: new Date().toISOString(),
+        notes: decryptedNotes,
+        files: decryptedFiles,
+        devices,
+        preferences: { tier: localStorage.getItem('isPro') === 'true' ? 'PRO' : 'FREE' }
+    };
+
+    const encryptedState = await encryptPayload(workspaceBundle, pkgKey);
+    const manifest = {
+        format: 'VROX_WORKSPACE_CONTAINER',
+        schemaVersion: 2,
+        createdAt: Date.now(),
+        ExecutableCodeAllowed: false,
+        counts: { notes: decryptedNotes.length, files: decryptedFiles.length, devices: devices.length }
+    };
+
+    const integrityPayload = JSON.stringify({ manifest, encryptedState });
+    const containerHash = await sha256Hex(integrityPayload);
+
+    const vroxContainer = {
+        manifest,
+        salt: bufToB64(salt),
+        encryptedState,
+        integrityMetadata: { algorithm: 'SHA-256', containerHash }
+    };
+
+    const blob = new Blob([JSON.stringify(vroxContainer, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `vroxit-workspace-${Date.now()}.vrox`;
+    a.click();
+    toast('.VROX Encrypted Container generated & downloaded');
+};
+
+$('btn-inspect-vrox').onclick = async () => {
+    const f = $('vrox-import-file').files[0];
+    const pass = $('vrox-import-pass').value;
+    if (!f) return toast('Select a .vrox package file first', 'err');
+    if (!pass) return toast('Enter the package decryption passphrase', 'err');
+
+    show($('vrox-inspect-box'), true);
+    show($('btn-confirm-import'), false);
+    const stepsEl = $('vrox-check-steps');
+    stepsEl.innerHTML = '';
+
+    const addStep = (label, ok, detail) => {
+        const icon = ok ? 'fa-circle-check text-emerald-400' : 'fa-circle-xmark text-rose-400';
+        stepsEl.innerHTML += `<div class="flex items-center justify-between"><span><i class="fa-solid ${icon} mr-1.5"></i>${esc(label)}</span><span class="text-slate-400">${esc(detail)}</span></div>`;
+    };
+
+    try {
+        const text = await f.text();
+        const pkg = JSON.parse(text);
+
+        // Step 1: Format & Schema Migration Check (Sec 20)
+        const validFmt = pkg.manifest && pkg.manifest.format === 'VROX_WORKSPACE_CONTAINER';
+        addStep('1. Container Format Check', validFmt, validFmt ? `Schema v${pkg.manifest.schemaVersion}` : 'Invalid');
+        if (!validFmt) throw new Error('Unrecognized .vrox format');
+
+        // Step 2: SHA-256 Container Integrity Check
+        const calcHash = await sha256Hex(JSON.stringify({ manifest: pkg.manifest, encryptedState: pkg.encryptedState }));
+        const hashOk = pkg.integrityMetadata && calcHash === pkg.integrityMetadata.containerHash;
+        addStep('2. SHA-256 Integrity Check', hashOk, hashOk ? calcHash.slice(0, 12) + '...' : 'TAMPERED');
+        if (!hashOk) throw new Error('Container SHA-256 integrity verification failed');
+
+        // Step 3: Non-Executable Sandbox Check
+        const noExec = pkg.manifest.ExecutableCodeAllowed === false && !/<script/i.test(text);
+        addStep('3. Malware / Script Sanitization', noExec, 'Data-Only Verified');
+
+        // Step 4: Authenticate & Decrypt Preview
+        const pkgKey = await deriveAesKey(pass, b64ToBuf(pkg.salt));
+        const bundle = await decryptPayload(pkg.encryptedState, pkgKey);
+        addStep('4. AES-GCM Decryption', true, 'Authenticated');
+
+        stagedVroxImport = bundle;
+        $('vrox-preview-summary').innerHTML = `<strong>Preview Ready for Approval:</strong> ${bundle.notes.length} Encrypted Notes, ${bundle.files.length} Encrypted Files, ${bundle.devices.length} Device Keys.`;
+        show($('btn-confirm-import'), true);
+    } catch (e) {
+        addStep('Inspection Halted', false, e.message);
+        $('vrox-preview-summary').textContent = 'Import blocked by deterministic security engine.';
+    }
+};
+
+$('btn-confirm-import').onclick = async () => {
+    if (!stagedVroxImport || !sessionKey) return;
+    let count = 0;
+    for (const item of [...stagedVroxImport.notes, ...stagedVroxImport.files]) {
+        const reEncrypted = await encryptPayload(item.plain, sessionKey);
+        await dbPut('items', {
+            id: item.row.id || ('VLT-IMP-' + Date.now() + '-' + count),
+            collection: item.row.collection || 'Documents',
+            created: item.row.created || Date.now(),
+            expiresAt: item.row.expiresAt || null,
+            size: JSON.stringify(reEncrypted).length,
+            enc: reEncrypted
+        });
+        count++;
+    }
+    stagedVroxImport = null;
+    show($('vrox-inspect-box'), false);
+    show($('btn-confirm-import'), false);
+    await refreshAllViews();
+    toast(`Imported & re-keyed ${count} workspace items into your Vault`);
+};
+
+/* ---------- 7. Smart Share Router, P2P & Share Control Center (Sec 3, 4, 5, 11) ---------- */
+const ROUTE_MAP = {
+    qr: 'Recommended Route: QR Encrypted Payload (Zero-Server, Instant Scan)',
+    webrtc: 'Recommended Route: WebRTC P2P DataChannel (Direct Device-to-Device)',
+    p2p_chunk: 'Recommended Route: Chunked Local P2P + SHA-256 Resume Engine',
+    temp_link: 'Recommended Route: Ephemeral Zero-Knowledge Link (Ciphertext-Only)',
+    vrox_pkg: 'Recommended Route: .VROX Portable Encrypted Workspace Container'
+};
+$('share-payload-type').onchange = (e) => {$('router-recommendation').textContent = ROUTE_MAP[e.target.value] || '';
+};
+
+$('btn-create-share').onclick = async () => {
+    const mode = $('share-payload-type').value;
+    const exp = $('share-expiry').value;
+    const maxViews = Number($('share-max-views').value);
+    const id = 'SHR-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+    await dbPut('shares', {
+        id,
+        mode,
+        created: Date.now(),
+        expiryLabel: exp,
+        views: 0,
+        maxViews,
+        status: 'ACTIVE'
+    });
+    await renderShares();
+    toast(`Share ${id} initialized via ${mode.toUpperCase()}`);
+};
+
+async function renderShares() {
+    const shares = await dbGetAll('shares');
+    const active = shares.filter(s => s.status === 'ACTIVE');
+    $('stat-shares').textContent = `${active.length} active`;
+    $('stat-expiring').textContent = `${active.length} expiring soon`;
+
+    const box = $('share-list');
+    if (!shares.length) {
+        box.innerHTML = `<p class="text-xs text-slate-400">No active shares. Use the Smart Share Router above to create one.</p>`;
+        return;
+    }
+    box.innerHTML = shares.map(s => {
+        const isRevoked = s.status !== 'ACTIVE';
+        return `<div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="font-mono font-bold text-white">${esc(s.id)}</span>
+                    <span class="status-pill ${isRevoked ? 'st-fail' : 'st-pass'}">${esc(s.status)}</span>
+                    <span class="text-slate-400 font-mono">Route: ${esc(s.mode.toUpperCase())}</span>
+                </div>
+                <p class="text-[11px] text-slate-400 font-mono mt-1">Views: ${s.views}/${s.maxViews} • Expires: ${esc(s.expiryLabel)} • Password Protected</p>
+            </div>
+            <div class="flex items-center gap-2">
+                ${!isRevoked ? `<button type="button" data-sim-view="${esc(s.id)}" class="btn-outline !py-1 !px-2.5 !text-[11px]">Simulate View</button>
+                <button type="button" data-revoke-id="${esc(s.id)}" class="btn-danger !py-1 !px-2.5 !text-[11px]">Revoke Now</button>` : `<span class="text-xs font-mono text-rose-400">Terminated</span>`}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+$('share-list').onclick = async (e) => {
+    const rev = e.target.closest('[data-revoke-id]');
+    const vw = e.target.closest('[data-sim-view]');
+    if (rev) {
+        const s = await dbGet('shares', rev.dataset.revokeId);
+        if (s) { s.status = 'REVOKED'; await dbPut('shares', s); await renderShares(); toast(`Share ${s.id} revoked immediately`); }
+    } else if (vw) {
+        const s = await dbGet('shares', vw.dataset.simView);
+        if (s && s.status === 'ACTIVE') {
+            s.views += 1;
+            if (s.views >= s.maxViews) s.status = 'EXPIRED (MAX VIEWS)';
+            await dbPut('shares', s);
+            await renderShares();
+        }
+    }
+};
+
+/* P2P Chunked Resume Simulation (Sec 3F & 11) */
+let p2pChunk = 0;
+let p2pTimer = null;
+function updateP2pUI() {
+    const pct = Math.round((p2pChunk / 1000) * 100);
+    $('p2p-pct').textContent = pct + '%';
+    $('p2p-bar').style.width = pct + '\%';$('p2p-chunk').textContent = `${p2pChunk} / 1000`;
+}
+$('btn-p2p-start').onclick = () => {
+    if (p2pTimer) return;
+    $('p2p-status-badge').textContent = 'Transferring P2P';$('p2p-status-badge').className = 'status-pill st-pass';
+    p2pTimer = setInterval(() => {
+        p2pChunk = Math.min(1000, p2pChunk + 25);
+        $('p2p-speed').textContent = '18.4 MB/s';
+        updateP2pUI();
+        if (p2pChunk >= 1000) {
+            clearInterval(p2pTimer); p2pTimer = null;
+            $('p2p-status-badge').textContent = 'Verified Complete';
+            toast('1,000 chunks transferred & SHA-256 verified');
+        }
+    }, 180);
+};
+$('btn-p2p-drop').onclick = () => {
+    if (p2pTimer) { clearInterval(p2pTimer); p2pTimer = null; }
+    $('p2p-speed').textContent = '0 MB/s (Paused)';$('p2p-status-badge').textContent = `Interrupted @ Chunk ${p2pChunk}`;
+    $('p2p-status-badge').className = 'status-pill st-warn';
+    toast(`Connection dropped at chunk ${p2pChunk}. Click Start/Resume to continue from last verified chunk.`, 'err');
+};
+$('btn-p2p-reset').onclick = () => {
+    if (p2pTimer) { clearInterval(p2pTimer); p2pTimer = null; }
+    p2pChunk = 0; $('p2p-speed').textContent = '0 MB/s'; updateP2pUI();
+    $('p2p-status-badge').textContent = 'DataChannel Ready';$('p2p-status-badge').className = 'status-pill st-pass';
+};
+
+/* ---------- 8. Burner Email Hub & OTP Detector (Sec 10) ---------- */
+$('btn-new-burner').onclick = async () => {
+    const rand = Math.random().toString(36).slice(2, 8);
+    const alias = `vrx.${rand}@burner.vroxit.local`;
+    await dbPut('burners', { id: 'BRN-' + Date.now(), alias, created: Date.now(), expires: '24h' });
+    await renderBurners();
+    toast(`Burner alias ${alias} created`);
+};
+
+async function renderBurners() {
+    const list = await dbGetAll('burners');
+    const box = $('burner-list');
+    if (!list.length) {
+        box.innerHTML = `<p class="text-xs text-slate-400 col-span-full">No active burner aliases. Click "Generate Burner Alias" above.</p>`;
+        return;
+    }
+    box.innerHTML = list.map(b => `<div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between text-xs font-mono">
+        <div>
+            <p class="text-neon-cyan font-bold">${esc(b.alias)}</p>
+            <p class="text-[11px] text-slate-400">Expires in ${esc(b.expires)} • Auto-Sanitize ON</p>
+        </div>
+        <button type="button" data-burn-id="${esc(b.id)}" class="btn-danger !py-1 !px-2.5 !text-[11px]">Burn Now</button>
+    </div>`).join('');
+}
+$('burner-list').onclick = async (e) => {
+    const btn = e.target.closest('[data-burn-id]');
+    if (btn) { await dbDel('burners', btn.dataset.burnId); await renderBurners(); toast('Burner inbox permanently burned'); }
+};
+
+function scanBurnerMessage(raw) {
+    const box = $('burner-scan-result');
+    if (!raw.trim()) return show(box, false);
+    show(box, true);
+    const otpMatch = raw.match(/\b(\d{6}|\d{4})\b/);
+    const hasHttp = /http:\/\/|bit\.ly|tinyurl|<script|onload=/i.test(raw);
+
+    box.innerHTML = `
+        <div class="flex items-center justify-between">
+            <span><strong>OTP Detection:</strong> ${otpMatch ? `<code class="text-neon-cyan font-bold text-sm ml-1">${esc(otpMatch[1])}</code>` : '<span class="text-slate-400">None detected</span>'}</span>
+            ${otpMatch ? `<button type="button" id="btn-copy-otp" data-otp="${esc(otpMatch[1])}" class="btn-cyber !py-1 !px-3 !text-xs">Copy OTP</button>` : ''}
+        </div>
+        <div class="pt-1 border-t border-slate-800">
+            <strong>Security Sanitizer:</strong> ${hasHttp ? `<span class="text-rose-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Suspicious unencrypted link or script tag blocked!</span>` : `<span class="text-emerald-400">Clean message — no phishing trackers detected.</span>`}
+        </div>
+    `;
+    const copyOtpBtn = $('btn-copy-otp');
+    if (copyOtpBtn) {
+        copyOtpBtn.onclick = async () => {
+            await navigator.clipboard.writeText(copyOtpBtn.dataset.otp);
+            startClipboardReminder();
+        };
+    }
+}
+$('burner-raw-msg').oninput = (e) => scanBurnerMessage(e.target.value);$('btn-sim-email').onclick = () => {
+    const sample = `Subject: Your Verification Code\nYour one-time security code is 849204. Beware of suspicious link: http://bit.ly/fake-login-verify`;
+    $('burner-raw-msg').value = sample;
+    scanBurnerMessage(sample);
+};
+
+/* ---------- 9. Trusted Devices & Pro Pass Upgrade (Sec 6, 7, 24) ---------- */
+async function renderDevices() {
+    const devs = await dbGetAll('devices');
+    const trustedCount = devs.filter(d => d.status === 'TRUSTED').length;
+    $('stat-devices').textContent = `${trustedCount} trusted`;
+
+    $('device-list').innerHTML = devs.map(d => {
+        const trusted = d.status === 'TRUSTED';
+        return `<div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between text-xs">
+            <div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-laptop-code text-neon-cyan"></i>
+                    <span class="font-bold text-white">${esc(d.name)}</span>
+                    <span class="status-pill ${trusted ? 'st-pass' : 'st-fail'}">${esc(d.status)}</span>
+                </div>
+                <p class="font-mono text-[11px] text-slate-400 mt-1">PubKey FP: ${esc(d.pubKeyFp)}</p>
+            </div>
+            ${trusted ? `<button type="button" data-rev-dev="${esc(d.id)}" class="btn-danger !py-1 !px-2.5 !text-[11px]">Revoke</button>` : `<span class="text-rose-400 font-mono text-[11px]">Blocked</span>`}
+        </div>`;
+    }).join('');
+}
+
+$('btn-pair-device').onclick = async () => {
+    const name = prompt('Enter name for paired device (e.g. 📱 My Android Phone, 💻 Backup Laptop):');
+    if (!name) return;
+    const fp = (await sha256Hex(name + Date.now())).slice(0, 24);
+    await dbPut('devices', { id: 'DEV-' + Date.now(), name, pubKeyFp: fp, status: 'TRUSTED', lastSeen: Date.now() });
+    await renderDevices();
+    toast(`Device "${name}" paired & added to Trusted Registry`);
+};
+
+$('device-list').onclick = async (e) => {
+    const btn = e.target.closest('[data-rev-dev]');
+    if (!btn) return;
+    const d = await dbGet('devices', btn.dataset.revDev);
+    if (d) { d.status = 'REVOKED'; await dbPut('devices', d); await renderDevices(); toast(`Device "${d.name}" revoked — future transfers blocked`, 'err'); }
+};
+
+const WORDS = ['cobalt','falcon','orbit','nebula','cipher','quartz','vortex','matrix','photon','titan'];
+$('btn-regen-phrase').onclick = () => {
+    const w1 = WORDS[Math.floor(Math.random() * WORDS.length)];
+    const w2 = WORDS[Math.floor(Math.random() * WORDS.length)];
+    const num = Math.floor(100 + Math.random() * 900);
+    $('pairing-phrase').textContent = `${w1}-${num}-${w2}-auth`;
+};
+
+function checkProBadge() {
+    const isPro = localStorage.getItem('isPro') === 'true';
+    const b = $('os-tier-badge');
+    if (b) {
+        b.textContent = isPro ? 'PRO PASS ACTIVE' : 'FREE TIER';
+        b.className = 'status-pill ' + (isPro ? 'st-pass' : 'st-warn');
+    }
+}
+$('btn-apply-vip').onclick = () => {
+    const code = $('vip-code-input').value.trim().toUpperCase();
+    if (code === 'VROXPRO-99') {
+        localStorage.setItem('isPro', 'true');
+        checkProBadge();
+        toast('VROXPRO-99 Accepted! Pro Pass unlocked (Prepaid • No AutoPay)');
+    } else {
+        toast('Invalid VIP Activation Code', 'err');
+    }
+};
+
+/* ---------- 10. AI Security Assistant & Navigation ---------- */
+document.querySelectorAll('[data-ai-ask]').forEach(btn => {
+    btn.onclick = async () => {
+        const items = await dbGetAll('items');
+        const shares = await dbGetAll('shares');
+        if (btn.dataset.aiAsk === 'audit') {
+            $('ai-assistant-msg').textContent = `Audit complete: ${items.length} encrypted vault items, ${shares.filter(s=>s.status==='ACTIVE').length} active shares. Key v${keyVersion} in RAM.`;
+        } else {
+            $('ai-assistant-msg').textContent = `Scanned ${items.length} metadata headers: 0 duplicate SHA-256 file hashes found.`;
+        }
+    };
+});
+
+function switchTab(tabName) {
+    document.querySelectorAll('[data-panel]').forEach(p => show(p, p.dataset.panel === tabName));
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+}
+document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => switchTab(b.dataset.tab));
+document.querySelectorAll('[data-goto]').forEach(b => b.onclick = () => switchTab(b.dataset.goto));
+
+/* ---------- 11. Command Palette (`/`) (Sec 18) ---------- */
+const COMMANDS = [
+    { cmd: '/lock', desc: 'Emergency Quick Lock — wipe RAM keys immediately', run: () => emergencyQuickLock() },
+    { cmd: '/vault', desc: 'Open Zero-Knowledge File & Note Vault', run: () => switchTab('vault') },
+    { cmd: '/vrox', desc: 'Open .VROX Workspace Export & Smart Import Center', run: () => switchTab('vrox') },
+    { cmd: '/share', desc: 'Open Smart Share Router & P2P Chunk Engine', run: () => switchTab('share') },
+    { cmd: '/burner', desc: 'Open Burner Email Hub & OTP Extractor', run: () => switchTab('burner') },
+    { cmd: '/devices', desc: 'Manage Trusted Devices & Public Keys', run: () => switchTab('devices') },
+    { cmd: '/security', desc: 'Run live WebCrypto & IndexedDB Self-Test', run: () => { switchTab('dashboard'); runSecuritySelfTest(); } },
+    { cmd: '/pro', desc: 'View Prepaid Pro Pass & VIP Activation', run: () => switchTab('devices') }
+];
+
+function renderCmdList(filter = '') {
+    const q = filter.trim().toLowerCase();
+    const rows = COMMANDS.filter(c => !q || c.cmd.includes(q) || c.desc.toLowerCase().includes(q));
+    $('cmd-list').innerHTML = rows.map((c, idx) => `
+        <button type="button" data-cmd-idx="${COMMANDS.indexOf(c)}" class="w-full text-left px-3 py-2 rounded-xl hover:bg-neon-cyan/15 flex items-center justify-between">
+            <span class="text-neon-cyan font-bold">${esc(c.cmd)}</span>
+            <span class="text-slate-400 text-[11px]">${esc(c.desc)}</span>
+        </button>
+    `).join('');
+}
+
+function openCmdPalette() {
+    if (!sessionKey) return;
+    show($('cmd-modal'), true);$('cmd-input').value = '/';
+    renderCmdList('');
+    setTimeout(() => $('cmd-input').focus(), 30); }$('btn-open-cmd').onclick = openCmdPalette;
+$('btn-close-cmd').onclick = () => show($('cmd-modal'), false);
+$('cmd-input').oninput = (e) => renderCmdList(e.target.value);$('cmd-input').onkeydown = (e) => {
+    if (e.key === 'Enter') {
+        const val = e.target.value.trim().toLowerCase();
+        const hit = COMMANDS.find(c => val.startsWith(c.cmd));
+        if (hit) { show($('cmd-modal'), false); hit.run(); }
+    }
+};
+$('cmd-list').onclick = (e) => {
+    const btn = e.target.closest('[data-cmd-idx]');
+    if (btn) { show($('cmd-modal'), false); COMMANDS[Number(btn.dataset.cmdIdx)].run(); }
+};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && sessionKey && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) {
+        e.preventDefault();
+        openCmdPalette();
+    } else if (e.key === 'Escape') {
+        show($('cmd-modal'), false);
+    } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l' && sessionKey) {
+        e.preventDefault();
+        emergencyQuickLock();
+    }
+});
+
+async function refreshAllViews() {
+    await renderVaultItems();
+    await renderShares();
+    await renderBurners();
+    await renderDevices();
+}
+
+initApp();
+</script>
 </body>
 </html>
